@@ -1,0 +1,22 @@
+% 조건: 필터링 패치(BRCA 15,483) · 환자 단위 split · train+val 미세조정.
+% K=8 · d=512 · tau=0 · seed 2021 · ALPHA_SMOOTH=0
+%
+% alpha 는 인접행렬 평활 상수다. 모든 칸에 mean(C)*alpha 를 더해 spectral
+% embedding 을 만든다 — MoSPR 의 매크로상태 구성이 여기서 결정된다.
+% 비교 모델은 이 값을 쓰지 않으므로 alpha 판이 달라도 동일하다.
+% alpha=1 이면 인접행렬 edge 질량의 절반이 인공 균일 상수가 되고, 예측 성능은
+% 평평하지만(상류 sweep: 0~10 구간 폭 0.004) 매크로상태 안정성이 나빠진다.
+%
+% 굵게=열 최고, 밑줄=차순위.
+\begin{tabular}{lcccc}
+\toprule
+Variant & Histology input & Molecular output & Gene SCC & Hallmark SCC\\
+\midrule
+Global Direct & $M$ & Direct & 0.348 & 0.458\\
+Global Low-Rank & $M$ & $U_q$ & 0.380 & 0.481\\
+Spatial Direct & $[M\mid S]$ & Direct & 0.395 & \textbf{0.552}\\
+\midrule
+Shuffled-State Low-Rank & $[M\mid S_{\mathrm{shuffle}}]$ & $U_q$ & 0.272 & 0.338\\
+\textbf{Spatial Low-Rank (ours)} & $[M\mid S]$ & $U_q$ & \textbf{0.411} & 0.551\\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,33 @@
+--- a/model/build_model.py
++++ b/model/build_model.py
+@@ -22,12 +22,15 @@
+ )
+ 
+ 
++# Upstream wraps the three imports in one try, so one missing package skips all.
++# MambaMIL_2D runs on the official mamba-ssm alone, so it is imported separately.
+ try:
+-    from model.comparisons import (
+-        MambaMILvanira,
+-        SRMambaMIL,
+-        MambaMIL_2D,
+-    )
++    from model.comparisons import MambaMILvanira, SRMambaMIL
++except ImportError:
++    pass
++
++try:
++    from model.comparisons import MambaMIL_2D
+ except ImportError:
+     pass
+ 
+@@ -41,7 +44,8 @@
+         "BRCA": 14052,
+     }
+     IN_DIM = {"feature": 768, "feature_opt": 1536, "feature_conch": 512}
+-    cfg.MODEL.output_dim = OUT_DIM[args.dataset]
++    import os
++    cfg.MODEL.output_dim = int(os.environ["CPNN_OUT_DIM"]) if os.environ.get("CPNN_OUT_DIM") else OUT_DIM[args.dataset]
+     cfg.MODEL.input_dim = IN_DIM[args.feat_name]
+ 
+     model = eval(args.method)(args, cfg)

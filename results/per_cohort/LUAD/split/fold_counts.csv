@@ -1,0 +1,5 @@
+fold,train_slides,val_slides,test_slides,train_patients,val_patients,test_patients,leak_train_test,leak_val_test
+0,378,188,189,242,120,120,0,0
+1,377,189,189,241,120,121,0,0
+2,377,189,189,240,121,121,0,0
+3,378,189,188,241,121,120,0,0

@@ -1,0 +1,29 @@
+% 표 1 — 평균 (fold 간 표준편차)
+% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
+% 괄호 안은 4-fold 표준편차(ddof=1)다. 신뢰구간이 아니라 산포 자체다.
+% fold 가 4 개뿐이라 표준편차 추정 자체가 불안정하다는 점을 감안해 읽어야 한다.
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Method & PCC & SCC & PCC & SCC & PCC & SCC\\
+\midrule
+Max~\citep{wang2018revisiting} & 0.294\,{\tiny(0.021)} & 0.283\,{\tiny(0.009)} & 0.236\,{\tiny(0.012)} & 0.244\,{\tiny(0.013)} & 0.258\,{\tiny(0.018)} & 0.278\,{\tiny(0.015)}\\
+Mean~\citep{wang2018revisiting} & 0.336\,{\tiny(0.027)} & 0.338\,{\tiny(0.009)} & 0.285\,{\tiny(0.009)} & 0.293\,{\tiny(0.014)} & 0.292\,{\tiny(0.010)} & 0.315\,{\tiny(0.012)}\\
+AbMIL~\citep{ilse2018abmil} & 0.370\,{\tiny(0.025)} & 0.363\,{\tiny(0.013)} & 0.293\,{\tiny(0.013)} & 0.299\,{\tiny(0.015)} & 0.308\,{\tiny(0.013)} & 0.324\,{\tiny(0.018)}\\
+HE2RNA~\citep{schmauch2020he2rna} & 0.300\,{\tiny(0.033)} & 0.293\,{\tiny(0.017)} & 0.256\,{\tiny(0.032)} & 0.273\,{\tiny(0.031)} & 0.276\,{\tiny(0.010)} & 0.297\,{\tiny(0.012)}\\
+AbReg~\citep{graziani2022abreg} & 0.355\,{\tiny(0.016)} & 0.349\,{\tiny(0.015)} & 0.289\,{\tiny(0.031)} & 0.293\,{\tiny(0.030)} & 0.296\,{\tiny(0.012)} & 0.311\,{\tiny(0.010)}\\
+tRNAformer~\citep{alsaafin2022trnaformer} & 0.341\,{\tiny(0.023)} & 0.332\,{\tiny(0.008)} & 0.312\,{\tiny(0.017)} & 0.319\,{\tiny(0.022)} & 0.316\,{\tiny(0.010)} & 0.336\,{\tiny(0.007)}\\
+ILRA~\citep{xiang2023ilra} & 0.238\,{\tiny(0.064)} & 0.271\,{\tiny(0.031)} & 0.191\,{\tiny(0.101)} & 0.248\,{\tiny(0.017)} & 0.280\,{\tiny(0.009)} & 0.304\,{\tiny(0.008)}\\
+S4MIL~\citep{fillioux2023s4mil} & 0.328\,{\tiny(0.010)} & 0.330\,{\tiny(0.009)} & 0.269\,{\tiny(0.037)} & 0.274\,{\tiny(0.034)} & 0.299\,{\tiny(0.011)} & 0.315\,{\tiny(0.010)}\\
+MambaMIL~\citep{yang2024mambamil} & 0.363\,{\tiny(0.030)} & 0.356\,{\tiny(0.016)} & 0.290\,{\tiny(0.019)} & 0.290\,{\tiny(0.021)} & 0.319\,{\tiny(0.020)} & 0.335\,{\tiny(0.018)}\\
+SRMambaMIL~\citep{yang2024mambamil} & 0.361\,{\tiny(0.022)} & 0.352\,{\tiny(0.009)} & 0.292\,{\tiny(0.017)} & 0.294\,{\tiny(0.010)} & 0.311\,{\tiny(0.023)} & 0.326\,{\tiny(0.024)}\\
+MOSBY~\citep{senbabaoglu2024mosby} & 0.343\,{\tiny(0.022)} & 0.349\,{\tiny(0.008)} & 0.264\,{\tiny(0.018)} & 0.289\,{\tiny(0.031)} & 0.289\,{\tiny(0.027)} & 0.308\,{\tiny(0.019)}\\
+SEQUOIA VIS~\citep{pizurica2024sequoia} & 0.353\,{\tiny(0.033)} & 0.337\,{\tiny(0.007)} & 0.310\,{\tiny(0.024)} & 0.314\,{\tiny(0.025)} & 0.317\,{\tiny(0.015)} & 0.331\,{\tiny(0.016)}\\
+2DMamba~\citep{zhang2025twodmamba} & 0.352\,{\tiny(0.032)} & 0.348\,{\tiny(0.009)} & 0.287\,{\tiny(0.009)} & 0.292\,{\tiny(0.016)} & 0.300\,{\tiny(0.013)} & 0.313\,{\tiny(0.014)}\\
+CPNN~\citep{nishimura2026cpnn} & 0.360\,{\tiny(0.018)} & 0.356\,{\tiny(0.011)} & 0.293\,{\tiny(0.006)} & 0.310\,{\tiny(0.009)} & 0.305\,{\tiny(0.004)} & 0.325\,{\tiny(0.009)}\\
+\midrule
+\textbf{MoSPR (ours)} & \textbf{0.413\,{\tiny(0.017)}} & \textbf{0.411\,{\tiny(0.009)}} & \textbf{0.334\,{\tiny(0.024)}} & \textbf{0.348\,{\tiny(0.023)}} & \textbf{0.358\,{\tiny(0.009)}} & \textbf{0.376\,{\tiny(0.012)}}\\
+\bottomrule
+\end{tabular}

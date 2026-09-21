@@ -1,0 +1,32 @@
+{
+  "condition": "fpsplit_tv",
+  "cohort": "KIRC",
+  "split_file": "split_patient.pkl",
+  "run_name_suffix": "_pstvf",
+  "results_root": "<redacted for anonymous submission>",
+  "dataset_root": "<redacted for anonymous submission>",
+  "seed": 2021,
+  "n_folds": 4,
+  "patch_set": "filtered",
+  "patch_counts_example": {
+    "slide": "TCGA-3Z-A93Z-01A_992_TS",
+    "n_patches": 8119,
+    "feat_dim": 512
+  },
+  "python": "3.11.15",
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "numpy": "2.4.6",
+  "sklearn": "1.9.0",
+  "scipy": "1.17.1",
+  "lightning": "2.6.5",
+  "gpus": [
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08",
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08",
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08",
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08",
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08",
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition, 580.105.08"
+  ],
+  "git_commit": "HEAD"
+}

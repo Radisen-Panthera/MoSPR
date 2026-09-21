@@ -1,0 +1,34 @@
+% 조건: 필터링 패치(BRCA 15,483) · 환자 단위 split · train+val 미세조정.
+% K=8 · d=512 · tau=0 · seed 2021 · ALPHA_SMOOTH=0
+%
+% alpha 는 인접행렬 평활 상수다. 모든 칸에 mean(C)*alpha 를 더해 spectral
+% embedding 을 만든다 — MoSPR 의 매크로상태 구성이 여기서 결정된다.
+% 비교 모델은 이 값을 쓰지 않으므로 alpha 판이 달라도 동일하다.
+% alpha=1 이면 인접행렬 edge 질량의 절반이 인공 균일 상수가 되고, 예측 성능은
+% 평평하지만(상류 sweep: 0~10 구간 폭 0.004) 매크로상태 안정성이 나빠진다.
+%
+% 굵게=열 최고, 밑줄=차순위.
+\begin{tabular}{lccccccccc}
+\toprule
+& \multicolumn{3}{c}{BRCA} & \multicolumn{3}{c}{KIRC} & \multicolumn{3}{c}{LUAD}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Method & Hallmark & GO-BP & KEGG & Hallmark & GO-BP & KEGG & Hallmark & GO-BP & KEGG\\
+\midrule
+Max~\citep{wang2018revisiting} & 0.356 & 0.337 & 0.321 & 0.281 & 0.284 & 0.309 & 0.420 & 0.379 & 0.388\\
+Mean~\citep{wang2018revisiting} & 0.469 & 0.448 & 0.415 & 0.367 & 0.379 & 0.415 & 0.498 & 0.446 & 0.452\\
+AbMIL~\citep{ilse2018abmil} & \underline{0.500} & \underline{0.476} & \underline{0.446} & 0.378 & 0.388 & 0.418 & 0.519 & 0.465 & 0.474\\
+HE2RNA~\citep{schmauch2020he2rna} & 0.333 & 0.329 & 0.300 & 0.299 & 0.321 & 0.340 & 0.388 & 0.349 & 0.365\\
+AbReg~\citep{graziani2022abreg} & 0.481 & 0.453 & 0.425 & \underline{0.397} & \underline{0.389} & \underline{0.420} & 0.507 & 0.443 & 0.462\\
+tRNAformer~\citep{alsaafin2022trnaformer} & 0.412 & 0.381 & 0.345 & 0.367 & 0.368 & 0.404 & 0.467 & 0.415 & 0.424\\
+ILRA~\citep{xiang2023ilra} & 0.385 & 0.358 & 0.330 & 0.301 & 0.317 & 0.340 & 0.463 & 0.418 & 0.430\\
+S4MIL~\citep{fillioux2023s4mil} & 0.434 & 0.414 & 0.383 & 0.301 & 0.329 & 0.343 & 0.481 & 0.428 & 0.436\\
+MambaMIL~\citep{yang2024mambamil} & 0.479 & 0.458 & 0.423 & 0.308 & 0.326 & 0.345 & \textbf{0.529} & \underline{0.481} & \underline{0.487}\\
+SRMambaMIL~\citep{yang2024mambamil} & 0.463 & 0.448 & 0.411 & 0.306 & 0.315 & 0.338 & 0.514 & 0.455 & 0.472\\
+MOSBY~\citep{senbabaoglu2024mosby} & 0.400 & 0.381 & 0.354 & 0.257 & 0.263 & 0.293 & 0.348 & 0.312 & 0.324\\
+SEQUOIA VIS~\citep{pizurica2024sequoia} & 0.444 & 0.413 & 0.385 & 0.384 & 0.388 & 0.420 & 0.488 & 0.441 & 0.450\\
+2DMamba~\citep{zhang2025twodmamba} & 0.460 & 0.439 & 0.408 & 0.381 & 0.370 & 0.388 & 0.501 & 0.443 & 0.457\\
+CPNN~\citep{nishimura2026cpnn} & 0.391 & 0.377 & 0.327 & 0.282 & 0.293 & 0.349 & 0.427 & 0.380 & 0.388\\
+\midrule
+\textbf{MoSPR (ours)} & \textbf{0.551} & \textbf{0.520} & \textbf{0.486} & \textbf{0.402} & \textbf{0.415} & \textbf{0.447} & \underline{0.528} & \textbf{0.482} & \textbf{0.491}\\
+\bottomrule
+\end{tabular}

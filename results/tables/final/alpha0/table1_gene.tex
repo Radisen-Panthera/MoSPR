@@ -1,0 +1,34 @@
+% 조건: 필터링 패치(BRCA 15,483) · 환자 단위 split · train+val 미세조정.
+% K=8 · d=512 · tau=0 · seed 2021 · ALPHA_SMOOTH=0
+%
+% alpha 는 인접행렬 평활 상수다. 모든 칸에 mean(C)*alpha 를 더해 spectral
+% embedding 을 만든다 — MoSPR 의 매크로상태 구성이 여기서 결정된다.
+% 비교 모델은 이 값을 쓰지 않으므로 alpha 판이 달라도 동일하다.
+% alpha=1 이면 인접행렬 edge 질량의 절반이 인공 균일 상수가 되고, 예측 성능은
+% 평평하지만(상류 sweep: 0~10 구간 폭 0.004) 매크로상태 안정성이 나빠진다.
+%
+% 굵게=열 최고, 밑줄=차순위.
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Method & PCC & SCC & PCC & SCC & PCC & SCC\\
+\midrule
+Max~\citep{wang2018revisiting} & 0.294 & 0.283 & 0.236 & 0.244 & 0.258 & 0.278\\
+Mean~\citep{wang2018revisiting} & 0.336 & 0.338 & 0.285 & 0.293 & 0.292 & 0.315\\
+AbMIL~\citep{ilse2018abmil} & \underline{0.370} & \underline{0.363} & 0.293 & 0.299 & 0.308 & 0.324\\
+HE2RNA~\citep{schmauch2020he2rna} & 0.300 & 0.293 & 0.256 & 0.273 & 0.276 & 0.297\\
+AbReg~\citep{graziani2022abreg} & 0.355 & 0.349 & 0.289 & 0.293 & 0.296 & 0.311\\
+tRNAformer~\citep{alsaafin2022trnaformer} & 0.341 & 0.332 & \underline{0.312} & \underline{0.319} & 0.316 & \underline{0.336}\\
+ILRA~\citep{xiang2023ilra} & 0.238 & 0.271 & 0.191 & 0.248 & 0.280 & 0.304\\
+S4MIL~\citep{fillioux2023s4mil} & 0.328 & 0.330 & 0.269 & 0.274 & 0.299 & 0.315\\
+MambaMIL~\citep{yang2024mambamil} & 0.363 & 0.356 & 0.290 & 0.290 & \underline{0.319} & 0.335\\
+SRMambaMIL~\citep{yang2024mambamil} & 0.361 & 0.352 & 0.292 & 0.294 & 0.311 & 0.326\\
+MOSBY~\citep{senbabaoglu2024mosby} & 0.343 & 0.349 & 0.264 & 0.289 & 0.289 & 0.308\\
+SEQUOIA VIS~\citep{pizurica2024sequoia} & 0.353 & 0.337 & 0.310 & 0.314 & 0.317 & 0.331\\
+2DMamba~\citep{zhang2025twodmamba} & 0.352 & 0.348 & 0.287 & 0.292 & 0.300 & 0.313\\
+CPNN~\citep{nishimura2026cpnn} & 0.360 & 0.356 & 0.293 & 0.310 & 0.305 & 0.325\\
+\midrule
+\textbf{MoSPR (ours)} & \textbf{0.413} & \textbf{0.411} & \textbf{0.334} & \textbf{0.348} & \textbf{0.358} & \textbf{0.376}\\
+\bottomrule
+\end{tabular}

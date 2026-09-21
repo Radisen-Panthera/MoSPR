@@ -1,0 +1,42 @@
+--- a/dataloader/our_dataset.py
++++ b/dataloader/our_dataset.py
+@@ -1,3 +1,4 @@
++import os as _os_tv
+ from pathlib import Path
+ import pickle
+ 
+@@ -50,7 +51,11 @@
+ 
+         if args.resolution == "":
+             args.resolution = "fine"
+-        with open(f"{data_dir}/{args.fold}/{args.resolution}_parameter_dict.pkl", "rb") as f:
++        # CPNN_C2L_PREFIX: prefix of the cell2location output folder; "" means {fold}.
++        # A patient-level split has different folds, so a parameter_dict built on the
++        # authors' split does not cover the new training slides. "ps" reads ps{fold}.
++        _pfx = _os_tv.environ.get("CPNN_C2L_PREFIX", "")
++        with open(f"{data_dir}/{_pfx}{args.fold}/{args.resolution}_parameter_dict.pkl", "rb") as f:
+             params = pickle.load(f)
+ 
+         self.cell_prop = params["W"]
+@@ -73,9 +78,20 @@
+     def load_sample_paths(self, args, cfg, split):
+         data_dir = f"{cfg.DATASET.data_dir}/{args.dataset}-digital_slide"
+         # sample_pair_{args.feat_name}
+-        with open(f"{data_dir}/split.pkl", "rb") as f:
++        # CPNN_SPLIT_FILE: which split to read. Default is the authors' split.pkl.
++        # "split_patient.pkl" switches to the patient-level split: the authors' split
++        # is keyed on sample ID, so two samples of one patient can fall on both sides
++        # of the train/test boundary (4 cases in BRCA, 2 in LUAD).
++        _sf = _os_tv.environ.get("CPNN_SPLIT_FILE", "split.pkl")
++        with open(f"{data_dir}/{_sf}", "rb") as f:
+             split_dict = pickle.load(f)
+         sample_paths = split_dict[args.fold][split]
++        # CPNN_TRAINVAL=1 folds the validation slides into training (stage 2).
++        # With validation inside training there is no early-stopping criterion left,
++        # so training runs for the epoch count chosen by the stage-1 run
++        # (CPNN_MAX_EPOCHS in main.py). Unset, the behaviour is the original one.
++        if split == "train" and _os_tv.environ.get("CPNN_TRAINVAL") == "1":
++            sample_paths = list(sample_paths) + list(split_dict[args.fold]["val"])
+         self.sample_paths = [
+             Path(str(p).replace("sample_pair_feature", f"sample_pair_{args.feat_name}")) for p in sample_paths
+         ]

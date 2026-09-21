@@ -1,0 +1,33 @@
+% 표 1 — 평균과 MoSPR 대비 p 값
+% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
+% p 는 **MoSPR 과 해당 모델의 fold 짝지은 유전자 SCC 차이**에 대한
+% 양측 대응 t-검정 결과다 (n=4 fold, df=3). 귀무가설은 '두 모델의
+% fold 별 SCC 차이의 평균이 0' 이다. 모든 모델이 같은 4-fold 를 보므로
+% 짝지어 검정한다 — 독립 표본으로 다루면 fold 난이도라는 공통 성분이
+% 잡음으로 세어져 검정력이 떨어진다.
+% 다중비교 보정은 하지 않았다 (코호트당 14 개 비교).
+\begin{tabular}{lccccccccc}
+\toprule
+& \multicolumn{3}{c}{BRCA} & \multicolumn{3}{c}{KIRC} & \multicolumn{3}{c}{LUAD}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Method & PCC & SCC & $p$ & PCC & SCC & $p$ & PCC & SCC & $p$\\
+\midrule
+Max~\citep{wang2018revisiting} & 0.294 & 0.283 & \textless.001 & 0.236 & 0.244 & \textless.001 & 0.258 & 0.278 & \textless.001\\
+Mean~\citep{wang2018revisiting} & 0.336 & 0.338 & 0.003 & 0.285 & 0.293 & 0.002 & 0.292 & 0.315 & 0.012\\
+AbMIL~\citep{ilse2018abmil} & 0.370 & 0.363 & 0.022 & 0.293 & 0.299 & 0.004 & 0.308 & 0.324 & 0.022\\
+HE2RNA~\citep{schmauch2020he2rna} & 0.300 & 0.293 & 0.003 & 0.256 & 0.273 & 0.004 & 0.276 & 0.297 & \textless.001\\
+AbReg~\citep{graziani2022abreg} & 0.355 & 0.349 & 0.010 & 0.289 & 0.293 & 0.007 & 0.296 & 0.311 & 0.005\\
+tRNAformer~\citep{alsaafin2022trnaformer} & 0.341 & 0.332 & 0.002 & 0.312 & 0.319 & 0.024 & 0.316 & 0.336 & 0.010\\
+ILRA~\citep{xiang2023ilra} & 0.238 & 0.271 & 0.004 & 0.191 & 0.248 & \textless.001 & 0.280 & 0.304 & \textless.001\\
+S4MIL~\citep{fillioux2023s4mil} & 0.328 & 0.330 & 0.002 & 0.269 & 0.274 & 0.005 & 0.299 & 0.315 & 0.002\\
+MambaMIL~\citep{yang2024mambamil} & 0.363 & 0.356 & 0.021 & 0.290 & 0.290 & 0.001 & 0.319 & 0.335 & 0.027\\
+SRMambaMIL~\citep{yang2024mambamil} & 0.361 & 0.352 & 0.004 & 0.292 & 0.294 & 0.008 & 0.311 & 0.326 & 0.032\\
+MOSBY~\citep{senbabaoglu2024mosby} & 0.343 & 0.349 & 0.002 & 0.264 & 0.289 & 0.007 & 0.289 & 0.308 & 0.001\\
+SEQUOIA VIS~\citep{pizurica2024sequoia} & 0.353 & 0.337 & 0.001 & 0.310 & 0.314 & 0.002 & 0.317 & 0.331 & 0.043\\
+2DMamba~\citep{zhang2025twodmamba} & 0.352 & 0.348 & 0.004 & 0.287 & 0.292 & 0.004 & 0.300 & 0.313 & 0.010\\
+CPNN~\citep{nishimura2026cpnn} & 0.360 & 0.356 & 0.005 & 0.293 & 0.310 & 0.012 & 0.305 & 0.325 & 0.009\\
+\midrule
+\textbf{MoSPR (ours)} & \textbf{0.413} & \textbf{0.411} & -- & \textbf{0.334} & \textbf{0.348} & -- & \textbf{0.358} & \textbf{0.376} & --\\
+\bottomrule
+\end{tabular}

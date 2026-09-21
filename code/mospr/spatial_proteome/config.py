@@ -1,0 +1,48 @@
+from pathlib import Path
+
+
+import os
+DATA_ROOT = Path(os.environ.get("MOSPR_COHORT_DATA_ROOT", "data"))
+FEATURES_DIR = DATA_ROOT / "features"
+COORDS_DIR = DATA_ROOT / "coords"
+PROTEOMICS_CSV = DATA_ROOT / "proteomics" / "proteomics_clinical.csv"
+CLINICAL_CSV = DATA_ROOT / "clinical" / "clinical_info.csv"
+
+PROJECT_ROOT = Path(os.environ.get("MOSPR_ROOT", Path(__file__).resolve().parents[3]))
+OUTPUT_DIR = PROJECT_ROOT / "outputs"
+MICROSTATE_LABEL_DIR = OUTPUT_DIR / "microstate_labels"
+C_MATRIX_DIR = OUTPUT_DIR / "C_matrices"
+
+
+PATCH_SIZE = 512
+N_NEIGHBORS = 8
+RING_CANDIDATES = (1, 2, 3, 4)
+
+
+NON_TUMOR_MS = (3, 4, 6, 8)
+TUMOR_FRAC_LIMITS = (0.05, 0.95)
+
+
+M_MICROSTATES = 200
+K_MACROSTATES = 10
+K_CANDIDATES = (8, 10, 12, 15)
+N_EIGENVECTORS = 20
+SAMPLES_PER_PATIENT = 2000
+
+
+ALPHA_SMOOTH = 0.0
+ALPHA_SMOOTH_LEGACY = 1.0
+
+
+MACRO_N_INIT = 5000
+MICRO_N_INIT = 10
+MACRO_N_INIT_LEGACY = 50
+MICRO_N_INIT_LEGACY = 10
+EPS_ENRICH = 1.0
+
+
+TEST_FRACTION = 0.2
+RANDOM_SEED = 42
+
+RIDGE_ALPHAS = (0.01, 0.1, 1.0, 10.0, 100.0, 1000.0)
+CV_FOLDS = 5

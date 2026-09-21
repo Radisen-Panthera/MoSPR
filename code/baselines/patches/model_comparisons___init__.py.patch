@@ -1,0 +1,23 @@
+--- a/model/comparisons/__init__.py
++++ b/model/comparisons/__init__.py
+@@ -8,12 +8,16 @@
+ from .ilra import ILRA
+ from .sum_exp_model import SumExpModel
+ 
++# Upstream wraps both imports in one try, so a failing mamba_mil (which needs
++# SRMamba/BiMamba) also skips mamba_mil2d. MambaMIL_2D only needs the local
++# mamba_simple.py, so the blocks are split here.
+ try:
+     from .mamba_mil import SRMambaMIL, MambaMILvanira
++except ImportError:
++    print("SRMamba/BiMamba missing -> MambaMILvanira, SRMambaMIL disabled (MambaMIL fork required)")
++
++try:
+     from .mamba_mil2d import MambaMIL_2D
+ except ImportError:
+-    print(
+-        "mamba-ssm is not installed. Please install mamba-ssm to use MambaMIL and MambaMIL_2D."
+-    )
+-from .mamba_mil import SRMambaMIL, MambaMILvanira
++    print("mamba-ssm missing -> MambaMIL_2D disabled")
+ from .s4mil import S4Model
