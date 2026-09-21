@@ -213,6 +213,7 @@ cohorts. MoSPR itself has no GPU step; its fits are closed-form.
 ## Notes
 
 Seed 2021 is fixed for Python, NumPy, PyTorch and the dataloader workers; `PYTHONHASHSEED` has to
-be exported by the launcher and the code warns when it is not. Two details of the baseline code
-that affect the reported numbers - the seed that upstream never applies, and the pooling
-baselines - are documented in `code/baselines/README.md`.
+be exported by the launcher and the code warns when it is not.
+
+The Max and Mean baselines pool after the learned fc+ReLU embedding, following the cited designs;
+`code/baselines/README.md` describes that patch and the seeding patch.

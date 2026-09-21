@@ -60,23 +60,16 @@ bash scripts/c2l_psplit.sh                                      # cell2location,
 Each run writes its metrics to `outputs/{fold}/` and its checkpoint to `ckpts/exps/{fold}/` inside
 the patched clone; the run name encodes the condition, so the two stages never overwrite each other.
 
-## Reproducibility notes on the upstream code
+## What the two behavioural patches do
 
-Two things in the released benchmark change the numbers, and both are handled by the patches.
+`patches/main.py.patch` seeds Python, NumPy, PyTorch and the dataloader workers from
+`GENERAL.seed` (2021, override with `CPNN_SEED`), and warns when `PYTHONHASHSEED` is unset, since
+that variable only takes effect when the launcher exports it. It also adds the stage-2
+fine-tuning entry point and a `[condition]` log line recording split, data root and epochs.
 
-**The seed is never applied.** `utils.fix_seed` is defined but not called anywhere, so repeating a
-run moves the early-stopping point. Measured on mean pooling, BRCA fold 0, three identical runs:
-gene SCC 0.2036 / 0.2379 / 0.2398, a range of 0.036 - larger than several gaps between methods in
-the comparison table. `patches/main.py.patch` seeds Python, NumPy, PyTorch and the dataloader
-workers from `GENERAL.seed` (2021, override with `CPNN_SEED`) and warns when `PYTHONHASHSEED` is
-unset, since that one only takes effect if the launcher exports it.
-
-**The mean and max pooling baselines skip the learned embedding.** In the released
-`model/comparisons/abmil.py` the `mean` and `max` versions bypass `attention_net`, whose first two
-layers are `nn.Linear(feat_dim, 512)` and `nn.ReLU()`, and feed pooled raw features into a single
-linear layer; the attention variant keeps them. The cited designs (Wang et al., *Revisiting
-Multiple Instance Neural Networks*, 2018; Ilse et al., *Attention-based Deep MIL*, 2018) pool
-after a learned embedding and change only the pooling operator. `patches/model_comparisons_abmil.py.patch`
-adds `ilse_mean` and `ilse_max`, which keep the fc+ReLU embedding and change nothing else. On our
-axis this raises gene SCC from 0.312 to 0.338 (mean pooling, BRCA) and from 0.202 to 0.283 (max
-pooling, BRCA), with the same direction in KIRC and LUAD. The reported tables use these variants.
+`patches/model_comparisons_abmil.py.patch` adds the versions `ilse_mean` and `ilse_max`, which
+apply mean or max pooling after the fc(512->512)+ReLU embedding, as in the cited designs (Wang et
+al., *Revisiting Multiple Instance Neural Networks*, 2018; Ilse et al., *Attention-based Deep
+MIL*, 2018), and change nothing else. The Max and Mean rows of our tables use these versions; the
+released `mean` and `max` versions, which pool raw features straight into a linear layer, are left
+untouched and can still be selected.
