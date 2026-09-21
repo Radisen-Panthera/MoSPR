@@ -212,9 +212,7 @@ cohorts. MoSPR itself has no GPU step; its fits are closed-form.
 
 ## Notes
 
-Seed 2021 is fixed for Python, NumPy, PyTorch and the dataloader workers. `PYTHONHASHSEED` has to
-be exported by the launcher; the code warns when it is not. The upstream benchmark defines a seed
-helper but never calls it, so repeated runs of the same configuration drifted (measured: mean-pool
-BRCA fold 0 gave SCC 0.2036 / 0.2379 / 0.2398 over three runs); the patch in
-`code/baselines/patches/main.py.patch` fixes that.
-
+Seed 2021 is fixed for Python, NumPy, PyTorch and the dataloader workers; `PYTHONHASHSEED` has to
+be exported by the launcher and the code warns when it is not. Two details of the baseline code
+that affect the reported numbers - the seed that upstream never applies, and the pooling
+baselines - are documented in `code/baselines/README.md`.

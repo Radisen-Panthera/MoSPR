@@ -57,4 +57,26 @@ ILSE=1 ONLY="ilse_mean ilse_max" bash scripts/run_ilse.sh       # pooling baseli
 bash scripts/c2l_psplit.sh                                      # cell2location, CPNN only
 ```
 
-`scripts/collect_release.py` gathers the per-fold metrics, predictions and checkpoints.
+Each run writes its metrics to `outputs/{fold}/` and its checkpoint to `ckpts/exps/{fold}/` inside
+the patched clone; the run name encodes the condition, so the two stages never overwrite each other.
+
+## Reproducibility notes on the upstream code
+
+Two things in the released benchmark change the numbers, and both are handled by the patches.
+
+**The seed is never applied.** `utils.fix_seed` is defined but not called anywhere, so repeating a
+run moves the early-stopping point. Measured on mean pooling, BRCA fold 0, three identical runs:
+gene SCC 0.2036 / 0.2379 / 0.2398, a range of 0.036 - larger than several gaps between methods in
+the comparison table. `patches/main.py.patch` seeds Python, NumPy, PyTorch and the dataloader
+workers from `GENERAL.seed` (2021, override with `CPNN_SEED`) and warns when `PYTHONHASHSEED` is
+unset, since that one only takes effect if the launcher exports it.
+
+**The mean and max pooling baselines skip the learned embedding.** In the released
+`model/comparisons/abmil.py` the `mean` and `max` versions bypass `attention_net`, whose first two
+layers are `nn.Linear(feat_dim, 512)` and `nn.ReLU()`, and feed pooled raw features into a single
+linear layer; the attention variant keeps them. The cited designs (Wang et al., *Revisiting
+Multiple Instance Neural Networks*, 2018; Ilse et al., *Attention-based Deep MIL*, 2018) pool
+after a learned embedding and change only the pooling operator. `patches/model_comparisons_abmil.py.patch`
+adds `ilse_mean` and `ilse_max`, which keep the fc+ReLU embedding and change nothing else. On our
+axis this raises gene SCC from 0.312 to 0.338 (mean pooling, BRCA) and from 0.202 to 0.283 (max
+pooling, BRCA), with the same direction in KIRC and LUAD. The reported tables use these variants.
