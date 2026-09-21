@@ -183,6 +183,33 @@ standardisation (`xmu`/`xsd`), the target standardisation (`ymu`/`ysd`) and `gen
    ```
 5. Tables and figures: run the notebooks in `code/notebooks/`.
 
+## Machine and runtimes
+
+Everything reported was produced on one machine:
+
+| | |
+|---|---|
+| CPU | 2 x Intel Xeon 6952P, 192 cores / 384 threads |
+| Memory | 1.5 TB |
+| GPU | 6 x NVIDIA RTX PRO 6000 Blackwell (96 GB each, sm_120), driver 580.105.08 |
+| OS | Ubuntu 24.04.3 LTS, kernel 6.8 |
+| Software | CUDA 13.0, PyTorch 2.13.0+cu130 (internal build), Python 3.11 (baselines) / 3.12 (MoSPR) |
+
+Measured wall-clock times, BRCA (1,467 slides, 15.2 M patches):
+
+| Step | Time | Device |
+|---|---|---|
+| Microstate cache, one fold | about 6 min (k-means + PCA 62 s, per-slide summaries 316 s) | CPU |
+| MoSPR stage 1, one fold, gene + pathway | 34 s | CPU |
+| MoSPR stage 2, one fold | 18 s | CPU |
+| Ablation, five variants, one fold | 63 s | CPU |
+| Macrostate x Hallmark enrichment, one fold | 24 s | CPU |
+| One baseline, one fold, stage 1 (early stopping around epoch 35) | 20-30 min | 1 GPU |
+| Baselines, 24 runs, stages 1 and 2 | about 50 min with 12 jobs in parallel | 6 GPUs |
+
+The microstate cache is the only large intermediate: about 880 MB per fold, so 10.5 GB for three
+cohorts. MoSPR itself has no GPU step; its fits are closed-form.
+
 ## Notes
 
 Seed 2021 is fixed for Python, NumPy, PyTorch and the dataloader workers. `PYTHONHASHSEED` has to
