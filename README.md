@@ -35,6 +35,7 @@ macrostates, and per-macrostate mean features feed a closed-form low-rank ridge 
 │   │   └── spatial_proteome/         library: adjacency, spectral, state features, pathways
 │   ├── baselines/                comparison methods (authors' code + our patches)
 │   │   ├── README.md                 upstream repository, commit, how to apply the patches
+│   │   ├── env/                      conda environment and Dockerfile for the baselines
 │   │   ├── patches/                  10 patches against naivete5656/CPNN
 │   │   └── scripts/                  axis_baselines.sh (both stages), run_ilse.sh,
 │   │                                  best_epochs.py, c2l_psplit.sh, build helpers
@@ -75,8 +76,9 @@ macrostates, and per-macrostate mean features feed a closed-form low-rank ridge 
 uv sync --project env            # Python 3.12, PyTorch cu128
 ```
 
-Baseline training needs a second environment (PyTorch Lightning, mamba-ssm); see
-`code/baselines/README.md`.
+Baseline training needs a second environment; `code/baselines/env/environment.yml` and
+`code/baselines/env/Dockerfile` build it, and `code/baselines/README.md` lists the three methods
+that need an extra step (MambaMIL/SRMambaMIL, 2DMamba, CPNN).
 
 Paths are resolved by `code/mospr/paths.py` and can be redirected with environment variables:
 `MOSPR_ROOT`, `MOSPR_DATASET_ROOT`, `MOSPR_RESULTS_ROOT`, `MOSPR_TABLES_ROOT`, `MOSPR_GENESETS`,

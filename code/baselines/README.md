@@ -25,6 +25,29 @@ for p in ../patches/*.patch; do patch -p1 < "$p"; done
 Replace `<DATA_ROOT>` and `<REPO_ROOT>` in the patched files with your own paths.
 Comments inside the patches are in Korean; they state why each hook exists.
 
+## Environment
+
+```bash
+conda env create -f env/environment.yml && conda activate mospr-baselines
+# or
+docker build -t mospr-baselines -f code/baselines/env/Dockerfile .
+```
+
+That covers AbMIL (all pooling variants), AbReg, ILRA, S4MIL, MOSBY, HE2RNA, SEQUOIA VIS and
+tRNAformer. Three methods need one extra step each, because they compile CUDA kernels or pull a
+large probabilistic stack:
+
+| Method | Extra step | Docker |
+|---|---|---|
+| MambaMIL, SRMambaMIL | `bash scripts/install_mambamil_fork.sh` (mamba-ssm fork + causal-conv1d 1.1.1) | `--build-arg WITH_MAMBA=1` |
+| 2DMamba | `bash scripts/build_2dmamba_kernel.sh` (compiles pscan for your architecture) | `--build-arg WITH_MAMBA=1`, then run the script |
+| CPNN (ProtoSum) | `pip install cell2location==0.1.5 scvi-tools==1.4.2`, then `bash scripts/c2l_psplit.sh` | `--build-arg WITH_CELL2LOCATION=1` |
+
+Without them those three are skipped and the code says so on import; the other methods are
+unaffected. Reference machine: RTX PRO 6000 Blackwell (sm_120), CUDA 13.0, torch 2.13.0+cu130,
+Python 3.11.15. The environment files pin the public cu128 wheels, which we did not build and
+test end to end; they describe the dependency set rather than a byte-identical copy of our run.
+
 ## Running
 
 ```bash
