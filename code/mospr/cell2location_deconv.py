@@ -10,7 +10,7 @@ Two stages, because the expensive one does not actually depend on the fold:
   --stage prototype  NB regression over cell types -> inf_aver (per label_key).
                      The gene axis is bulk ∩ single-cell, which is fold
                      independent, so CPNN's per-fold rerun of this step is
-                     redundant; we run it once and share it across folds.
+                     redundant; it is run once and shared across folds.
   --stage deconv     Cell2location on the fold's train+val bulk samples ->
                      {fold}/{resolution}_parameter_dict.pkl, the file
                      ProtoSum/PropDataset load. This one *is* fold specific
