@@ -1,237 +1,131 @@
 # MoSPR
 
 Predicting bulk transcriptomes from H&E whole-slide images with a state-structured linear model.
-Patches are quantised into microstates, microstates are grouped into a small number of tissue
-macrostates, and per-macrostate mean features feed a closed-form low-rank ridge regression.
+
+## Results
+
+Patient-level 4-fold cross-validation on TCGA; mean over folds. Per-fold values, 95% CIs and paired
+tests are in `results/tables/`.
+
+**Gene level** (PCC / SCC across slides, averaged over genes)
+
+| Method | BRCA PCC | BRCA SCC | KIRC PCC | KIRC SCC | LUAD PCC | LUAD SCC |
+|---|---|---|---|---|---|---|
+| Max | 0.294 | 0.283 | 0.236 | 0.244 | 0.258 | 0.278 |
+| Mean | 0.336 | 0.338 | 0.285 | 0.293 | 0.292 | 0.315 |
+| AbMIL | 0.370 | 0.363 | 0.293 | 0.299 | 0.308 | 0.324 |
+| HE2RNA | 0.300 | 0.293 | 0.256 | 0.273 | 0.276 | 0.297 |
+| AbReg | 0.355 | 0.349 | 0.289 | 0.293 | 0.296 | 0.311 |
+| tRNAformer | 0.341 | 0.332 | 0.312 | 0.319 | 0.316 | 0.336 |
+| ILRA | 0.238 | 0.271 | 0.191 | 0.248 | 0.280 | 0.304 |
+| S4MIL | 0.328 | 0.330 | 0.269 | 0.274 | 0.299 | 0.315 |
+| MambaMIL | 0.363 | 0.356 | 0.290 | 0.290 | 0.319 | 0.335 |
+| SRMambaMIL | 0.361 | 0.352 | 0.292 | 0.294 | 0.311 | 0.326 |
+| MOSBY | 0.343 | 0.349 | 0.264 | 0.289 | 0.289 | 0.308 |
+| SEQUOIA VIS | 0.353 | 0.337 | 0.310 | 0.314 | 0.317 | 0.331 |
+| 2DMamba | 0.352 | 0.348 | 0.287 | 0.292 | 0.300 | 0.313 |
+| CPNN | 0.360 | 0.356 | 0.293 | 0.310 | 0.305 | 0.325 |
+| **MoSPR** | **0.413** | **0.411** | **0.334** | **0.348** | **0.358** | **0.376** |
+
+**Pathway level** (median over gene sets of the per-set SCC)
+
+| Method | BRCA Hallmark | BRCA GO-BP | BRCA KEGG | KIRC Hallmark | KIRC GO-BP | KIRC KEGG | LUAD Hallmark | LUAD GO-BP | LUAD KEGG |
+|---|---|---|---|---|---|---|---|---|---|
+| Max | 0.356 | 0.337 | 0.321 | 0.281 | 0.284 | 0.309 | 0.420 | 0.379 | 0.388 |
+| Mean | 0.469 | 0.448 | 0.415 | 0.367 | 0.379 | 0.415 | 0.498 | 0.446 | 0.452 |
+| AbMIL | 0.500 | 0.476 | 0.446 | 0.378 | 0.388 | 0.418 | 0.519 | 0.465 | 0.474 |
+| HE2RNA | 0.333 | 0.329 | 0.300 | 0.299 | 0.321 | 0.340 | 0.388 | 0.349 | 0.365 |
+| AbReg | 0.481 | 0.453 | 0.425 | 0.397 | 0.389 | 0.420 | 0.507 | 0.443 | 0.462 |
+| tRNAformer | 0.412 | 0.381 | 0.345 | 0.367 | 0.368 | 0.404 | 0.467 | 0.415 | 0.424 |
+| ILRA | 0.385 | 0.358 | 0.330 | 0.301 | 0.317 | 0.340 | 0.463 | 0.418 | 0.430 |
+| S4MIL | 0.434 | 0.414 | 0.383 | 0.301 | 0.329 | 0.343 | 0.481 | 0.428 | 0.436 |
+| MambaMIL | 0.479 | 0.458 | 0.423 | 0.308 | 0.326 | 0.345 | **0.529** | 0.481 | 0.487 |
+| SRMambaMIL | 0.463 | 0.448 | 0.411 | 0.306 | 0.315 | 0.338 | 0.514 | 0.455 | 0.472 |
+| MOSBY | 0.400 | 0.381 | 0.354 | 0.257 | 0.263 | 0.293 | 0.348 | 0.312 | 0.324 |
+| SEQUOIA VIS | 0.444 | 0.413 | 0.385 | 0.384 | 0.388 | 0.420 | 0.488 | 0.441 | 0.450 |
+| 2DMamba | 0.460 | 0.439 | 0.408 | 0.381 | 0.370 | 0.388 | 0.501 | 0.443 | 0.457 |
+| CPNN | 0.391 | 0.377 | 0.327 | 0.282 | 0.293 | 0.349 | 0.427 | 0.380 | 0.388 |
+| **MoSPR** | **0.551** | **0.520** | **0.486** | **0.402** | **0.415** | **0.447** | 0.528 | **0.482** | **0.491** |
 
 ## Repository layout
 
 ```
 .
 ├── code/
-│   ├── features/                 patching and foundation-model features
-│   │   ├── extract_features.sh       one cohort end to end (CLAM patches -> encoder -> .h5)
-│   │   ├── encode_patches.py         CONCH / EXAONEPath / UNI / Prov-GigaPath
-│   │   └── attach_expression.py      attach matched bulk expression as `tpm`
-│   ├── mospr/                    the model and the scoring pipeline
-│   │   ├── paths.py                  every path in the repository resolves through this
-│   │   ├── build_microstate_cache.py microstates, PCA, adjacency, spectral embedding
-│   │   ├── design_blocks.py          design-matrix blocks [M | S]
-│   │   ├── train_mospr.py            the model (ridge on low-rank targets)
-│   │   ├── ablation.py               component ablation (Table 3)
-│   │   ├── score_pathways.py         pathway scoring for every method (Table 2)
-│   │   ├── macrostate_enrichment.py  gene-set enrichment of macrostate loadings
-│   │   ├── macrostate_hallmark_folds.py  macrostate x Hallmark, per fold
-│   │   ├── figure2_slide_pathway.py  Figure 2 (slide overlay + enrichment bars)
-│   │   ├── refit_gene_scores.py      stage 1 vs stage 2, gene axis
-│   │   ├── refit_pathway_scores.py   stage 1 vs stage 2, pathway axis
-│   │   ├── scorer_robustness.py      rescoring with ssGSEA and GSVA
-│   │   ├── global_factor.py          transcriptome-wide slide factor in mean-z set scores
-│   │   ├── data_efficiency_mospr.py, data_efficiency_score_baselines.py
-│   │   ├── cell2location_deconv.py   cell-type deconvolution (CPNN baseline only)
-│   │   ├── prototype_hybrid.py       shared fitting and metric helpers
-│   │   ├── run_mospr.sh              end-to-end MoSPR run
-│   │   ├── run_data_efficiency.sh    data-efficiency runs
-│   │   ├── cohorts.py                per-cohort dataset paths
-│   │   └── spatial_proteome/         library: adjacency, spectral, state features, pathways
-│   ├── baselines/                comparison methods (authors' code + our patches)
-│   │   ├── README.md                 upstream repository, commit, how to apply the patches
-│   │   ├── env/                      conda environment and Dockerfile for the baselines
-│   │   ├── patches/                  10 patches against naivete5656/CPNN
-│   │   └── scripts/                  axis_baselines.sh (both stages), run_ilse.sh,
-│   │                                  best_epochs.py, c2l_psplit.sh, build helpers
-│   ├── splits/                   patient-level splits
-│   │   ├── make_patient_split.py     builds the 4-fold split used in the paper
-│   │   ├── make_fraction_splits.py   subsampled splits for the data-efficiency runs
-│   │   ├── csv_to_pkl.py             rebuilds the split pickle from the shipped CSV
-│   │   └── check_split.py            compares a split against a reference
-│   ├── tests/test_pipeline.py    runs the pipeline and compares with the released numbers
-│   ├── config/                   configs used for the reported runs
-│   ├── tables/                   the tables in the paper, from the per-fold results
-│   │   ├── make_tables.py            Tables 1-3
-│   │   ├── table1_variants.py        Table 1 with 95% CI, fold SD and paired p against MoSPR
-│   │   ├── stats_tables.py           appendix: fold mean / 95% CI / SD per method
-│   │   ├── refit_tables.py           appendix: stage 1 vs stage 2, gene axis
-│   │   ├── refit_pathway_tables.py   appendix: stage 1 vs stage 2, pathway axis
-│   │   └── robustness_tables.py      appendix: mean-z vs ssGSEA vs GSVA, global slide factor
-│   ├── figures/
-│   │   ├── figure2.py                Figure 2
-│   │   └── data_efficiency.py        data-efficiency curves
-│   ├── reproduce_results.py      rebuilds the reported numbers from the per-fold CSVs
-│   └── fetch_checkpoints.py      downloads the weights once released
+│   ├── features/        patch extraction and foundation-model features
+│   ├── mospr/           the model and the scoring pipeline (paths.py resolves every path)
+│   ├── baselines/       comparison methods: upstream code, patches, runners, environment
+│   ├── tables/          table scripts and make_all_tables.sh
+│   ├── figures/         figure scripts
+│   ├── splits/          patient-level split construction and checks
+│   ├── config/          configs used for the reported runs
+│   ├── tests/           end-to-end check against the shipped results
+│   ├── reproduce_results.py
+│   └── fetch_checkpoints.py
 ├── results/
-│   ├── tables/
-│   │   ├── final/alpha0/         Tables 1-3 and the Table 1 variants (.tex), source CSVs
-│   │   ├── statistics/           fold mean / 95% CI / SD, fold-wise raw, appendix tables
-│   │   ├── refit/                stage 1 vs stage 2: per fold, summary, appendix tables
-│   │   ├── robustness/           scorer agreement and global slide factor, appendix tables
-│   │   ├── data_efficiency/      per fold x fraction, MoSPR and baselines
-│   │   └── macrostate/           per-fold macrostate x Hallmark enrichment
-│   └── per_cohort/{BRCA,KIRC,LUAD}/
-│       ├── results/              per-fold and summary scores
-│       └── split/                split_patient_4fold.csv, fold counts, provenance
-├── figures/final/                Figure 2 and the data-efficiency curves
-├── checkpoints/                  empty in this submission (see below)
-└── env/                          pyproject.toml, uv.lock, .python-version
+│   ├── per_cohort/{BRCA,KIRC,LUAD}/   per-fold scores and the 4-fold splits
+│   └── tables/                        every table (.tex) and the CSVs behind it
+├── figures/final/       manuscript figures
+├── checkpoints/         empty in this submission
+└── env/                 pyproject.toml, uv.lock, requirements.txt
 ```
 
 ## Setup
 
 ```bash
-uv sync --project env            # Python 3.12, PyTorch cu128
+uv sync --project env            # or: pip install -r env/requirements.txt
 ```
 
-Baseline training needs a second environment; `code/baselines/env/environment.yml` and
-`code/baselines/env/Dockerfile` build it, and `code/baselines/README.md` lists the three methods
-that need an extra step (MambaMIL/SRMambaMIL, 2DMamba, CPNN).
-
-Paths are resolved by `code/mospr/paths.py` and can be redirected with environment variables:
-`MOSPR_ROOT`, `MOSPR_DATASET_ROOT`, `MOSPR_RESULTS_ROOT`, `MOSPR_TABLES_ROOT`, `MOSPR_GENESETS`,
-`MOSPR_CPNN_REPO`, `MOSPR_LOGS`.
+The comparison methods need their own environment, see `code/baselines/README.md`.
+All paths go through `code/mospr/paths.py` and can be redirected with `MOSPR_ROOT`,
+`MOSPR_DATASET_ROOT`, `MOSPR_RESULTS_ROOT`, `MOSPR_TABLES_ROOT`, `MOSPR_GENESETS`,
+`MOSPR_PROCESSED`, `MOSPR_CPNN_REPO` and `MOSPR_LOGS`.
 
 ## Data and features
 
-Slides and expression are not included. Starting from whole-slide images and matched bulk
-expression:
+Slides and expression are not included.
 
 ```bash
 bash code/features/extract_features.sh \
     --slides /path/to/svs --out data/BRCA --encoder conch --expr bulk_BRCA.csv
 ```
 
-This segments tissue and extracts patches with CLAM, encodes them, and writes one `.h5` per slide
-with `coord`, `feat` and `tpm` (expression as log1p(TPM / sum * 1e4), the space all metrics use).
-`--encoder` accepts `conch` (512-d, used in the paper), `exaone`, `uni` and `gigapath`; a different
-encoder changes the feature dimension, so set `--pca` in `build_microstate_cache.py` to match.
+This extracts patches with CLAM, encodes them, and writes one `.h5` per slide with `coord`, `feat`
+and `tpm` (log1p(TPM / sum * 1e4)). `--encoder` takes `conch` (512-d, used for the results above),
+`exaone`, `uni` or `gigapath`; with a different dimension, set `--pca` in
+`build_microstate_cache.py` to match.
+<!-- TODO: patch filtering script and criteria -->
 
 ## Splits
 
-The 4-fold patient-level splits are shipped as slide-id CSVs, one per cohort:
-`results/per_cohort/{cohort}/split/split_patient_4fold.csv` (fold, split, slide, patient, sample).
-The pipeline reads a pickle of paths, which is rebuilt locally from the CSV:
+The patient-level 4-fold splits are `results/per_cohort/{cohort}/split/split_patient_4fold.csv`.
+The pipeline reads a pickle of paths, rebuilt locally with
 
 ```bash
 python code/splits/csv_to_pkl.py --cohort BRCA --data data
 ```
 
-`code/splits/make_patient_split.py` is the script that produced the split in the first place
-(patient-level, seed 2021, no patient shared between train, validation and test; asserted).
+## Reproducing
 
-## Testing
+1. Microstate cache: `python code/mospr/build_microstate_cache.py --cohort BRCA --variant paper --pca 512 --suffix _BRCA_fpsplit_p512`
+2. MoSPR: `bash code/mospr/run_mospr.sh`
+3. Comparison methods: see `code/baselines/README.md`
+4. Tables and figures from the per-fold results: `bash code/tables/make_all_tables.sh`
 
-```bash
-python code/tests/test_pipeline.py --data data --cohort BRCA --fold 0 \
-    --genesets refdata/genesets --processed data/processed --weights checkpoints
-```
+`python code/reproduce_results.py --check` rebuilds the reported numbers from the shipped per-fold
+CSVs without data or models and compares them with the tables. `code/tests/test_pipeline.py` runs
+one fold end to end and compares every step with `results/`.
 
-It rebuilds the design matrix, runs both MoSPR stages, the ablation and the macrostate enrichment
-on one fold, and compares each number with the values shipped in `results/`. Add `--with-cache` to
-rebuild the microstate cache first. One fold runs on CPU in a few minutes.
-
-## Weights and predictions
+## Checkpoints
 
 Due to storage constraints, pretrained checkpoints are not included in the anonymous submission
 repository. The repository contains the complete training and evaluation pipeline, including
-configurations and data splits. Pretrained weights will be released publicly upon publication.
+configurations and data splits. Pretrained weights will be released publicly upon publication, and
+`python code/fetch_checkpoints.py --url "<LINK>"` will download them into `checkpoints/`.
 
-Everything needed to trace how the reported numbers were produced is in the repository:
+## Environment used for the results
 
-| Item | Where |
-|---|---|
-| Feature extraction | `code/features/` |
-| Training and evaluation code | `code/mospr/`, `code/baselines/` |
-| Configs actually used | `code/config/` (`train_cfg.yaml`, `ProtoSum.yaml`, `cohorts.py`) |
-| 4-fold splits, and the code that builds them | `results/per_cohort/{cohort}/split/split_patient_4fold.csv`, `code/splits/` |
-| Seed | 2021 throughout (`GENERAL.seed`, `CPNN_SEED`, `PYTHONHASHSEED`); recorded in `results/per_cohort/*/split/provenance.json` |
-| Environment | `env/pyproject.toml`, `env/uv.lock`, `env/.python-version` |
-| Final tables | `results/tables/final/alpha0/` (.tex and source CSVs) |
-| Per-fold raw results | `results/per_cohort/{cohort}/results/`, `results/tables/statistics/stats_foldwise_*.csv` |
-| Aggregation script | `code/reproduce_results.py` |
-
-```bash
-python code/reproduce_results.py            # rebuild the reported numbers from the per-fold CSVs
-python code/reproduce_results.py --check    # and verify they match the .tex tables (exit 1 on mismatch)
-```
-
-It runs no model and needs no data: it reads the shipped per-fold scores, aggregates them the way
-the manuscript does (fold as the repeated unit, Student's t with df=3, paired tests against MoSPR),
-writes `results/tables/reproduced_summary.csv` and, with `--check`, diffs the means against
-`results/tables/final/alpha0/table1_gene.tex`.
-
-Once released, fetch the weights with the link provided at that time:
-
-```bash
-python code/fetch_checkpoints.py --url "<LINK>"                     # checkpoints
-python code/fetch_checkpoints.py --url "<LINK>" --what predictions  # per-fold test predictions
-```
-
-Per cohort that is 56 baseline `.ckpt` (14 methods x 4 folds) and 8 MoSPR `.npz`. The `.npz` files
-are closed-form fits rather than network checkpoints: `W_q`, `U`, `b_q`, the design-matrix
-standardisation (`xmu`/`xsd`), the target standardisation (`ymu`/`ysd`) and `genes`.
-
-## Reproducing the paper
-
-1. Features, as above, into `data/{cohort}/sample_pair_conch/`.
-2. Microstate cache, which everything downstream reads:
-   ```bash
-   python code/mospr/build_microstate_cache.py --cohort BRCA --variant paper --pca 512 \
-       --suffix _BRCA_fpsplit_p512
-   ```
-3. MoSPR, both stages (stage 1 selects q and lambda on validation, stage 2 refits on train+val):
-   ```bash
-   bash code/mospr/run_mospr.sh
-   ```
-4. Baselines: clone the upstream repository, apply `code/baselines/patches/`, then
-   ```bash
-   FILTERED=1 CONDITION=psplit    bash code/baselines/scripts/axis_baselines.sh
-   FILTERED=1 CONDITION=psplit_tv bash code/baselines/scripts/axis_baselines.sh
-   ```
-5. Tables and figures, from the per-fold results in `results/`:
-   ```bash
-   export MOSPR_RESULTS_ROOT=results/tables/final/alpha0/source
-   python code/tables/make_tables.py
-   python code/tables/table1_variants.py
-   python code/tables/stats_tables.py
-   python code/tables/refit_tables.py && python code/tables/refit_pathway_tables.py
-   python code/tables/robustness_tables.py --collection hallmark
-   python code/tables/robustness_tables.py --collection kegg
-   MOSPR_RESULTS_ROOT=results/tables/data_efficiency python code/figures/data_efficiency.py --cohort BRCA
-   ```
-   Every table script regenerates the shipped `.tex` file line for line. Figure 2 needs the
-   microstate cache and the slide images (`MOSPR_WSI_DIR`):
-   `python code/figures/figure2.py --cohort BRCA --fold 0`.
-
-## Machine and runtimes
-
-Everything reported was produced on one machine:
-
-| | |
-|---|---|
-| CPU | 2 x Intel Xeon 6952P, 192 cores / 384 threads |
-| Memory | 1.5 TB |
-| GPU | 6 x NVIDIA RTX PRO 6000 Blackwell (96 GB each, sm_120), driver 580.105.08 |
-| OS | Ubuntu 24.04.3 LTS, kernel 6.8 |
-| Software | CUDA 13.0, PyTorch 2.13.0+cu130 (internal build), Python 3.11 (baselines) / 3.12 (MoSPR) |
-
-Measured wall-clock times, BRCA (1,467 slides, 15.2 M patches):
-
-| Step | Time | Device |
-|---|---|---|
-| Microstate cache, one fold | about 6 min (k-means + PCA 62 s, per-slide summaries 316 s) | CPU |
-| MoSPR stage 1, one fold, gene + pathway | 34 s | CPU |
-| MoSPR stage 2, one fold | 18 s | CPU |
-| Ablation, five variants, one fold | 63 s | CPU |
-| Macrostate x Hallmark enrichment, one fold | 24 s | CPU |
-| One baseline, one fold, stage 1 (early stopping around epoch 35) | 20-30 min | 1 GPU |
-| Baselines, 24 runs, stages 1 and 2 | about 50 min with 12 jobs in parallel | 6 GPUs |
-
-The microstate cache is the only large intermediate: about 880 MB per fold, so 10.5 GB for three
-cohorts. MoSPR itself has no GPU step; its fits are closed-form.
-
-## Notes
-
-Seed 2021 is fixed for Python, NumPy, PyTorch and the dataloader workers; `PYTHONHASHSEED` has to
-be exported by the launcher and the code warns when it is not.
-
-The Max and Mean rows use the `ilse_mean` and `ilse_max` versions, which pool after the fc+ReLU
-embedding; see `code/baselines/README.md`.
+Ubuntu 24.04, 6 x NVIDIA RTX PRO 6000 Blackwell (96 GB), CUDA 13.0. MoSPR runs on CPU with the
+versions pinned in `env/`; one fold takes about a minute after the microstate cache (about 6 min
+per fold). The comparison methods ran on single GPUs, 20-30 min per model and fold. Seed 2021
+throughout.

@@ -33,7 +33,7 @@ dependencies:
 # ------
 # 1) MambaMIL and SRMambaMIL need the MambaMIL fork of mamba-ssm plus causal-conv1d 1.1.1:
 #        bash code/baselines/scripts/install_mambamil_fork.sh
-#    Versions we used: mamba_ssm 1.1.2 (fork), causal_conv1d 1.1.1.
+#    Versions used for the reported runs: mamba_ssm 1.1.2 (fork), causal_conv1d 1.1.1.
 # 2) 2DMamba needs its CUDA kernel compiled for your architecture:
 #        bash code/baselines/scripts/build_2dmamba_kernel.sh
 #    On CUDA 13 a few symbols removed from cub have to be shimmed; the script does that.

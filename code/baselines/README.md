@@ -1,4 +1,4 @@
-# Baselines — CPNN benchmark code + our patches
+# Baselines: CPNN benchmark code with patches
 
 The comparison methods are trained with the authors' released code, not a fork of it.
 Clone it, apply the patches in `patches/`, and run the scripts in `scripts/`.
@@ -23,7 +23,6 @@ for p in ../patches/*.patch; do patch -p1 < "$p"; done
 | `model_comparisons_{ilra,mamba_mil2d,__init__}.py.patch` | environment fixes (sm_120 build, optional Mamba imports) |
 
 Replace `<DATA_ROOT>` and `<REPO_ROOT>` in the patched files with your own paths.
-Comments inside the patches are in Korean; they state why each hook exists.
 
 ## Environment
 
@@ -45,8 +44,8 @@ large probabilistic stack:
 
 Without them those three are skipped and the code says so on import; the other methods are
 unaffected. Reference machine: RTX PRO 6000 Blackwell (sm_120), CUDA 13.0, torch 2.13.0+cu130,
-Python 3.11.15. The environment files pin the public cu128 wheels, which we did not build and
-test end to end; they describe the dependency set rather than a byte-identical copy of our run.
+Python 3.11.15. The environment files pin the public cu128 wheels and have not been built and tested end to end;
+they describe the dependency set rather than a byte-identical copy of the reported runs.
 
 ## Running
 

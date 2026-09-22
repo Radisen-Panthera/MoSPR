@@ -7,7 +7,7 @@
 # The image carries everything the plain MIL/MIR baselines need. The Mamba kernels and the
 # cell2location stack are left as opt-in build args because they compile against your GPU
 # architecture and add several gigabytes.
-# Not built and tested end to end: it states the dependency set we ran with.
+# Not built and tested end to end: it states the dependency set of the reported runs.
 ARG CUDA_IMAGE=nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
 FROM ${CUDA_IMAGE}
 
