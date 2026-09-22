@@ -94,14 +94,18 @@ bash code/features/extract_features.sh --slides /path/to/svs --out data/BRCA-pap
 python code/features/build_pathway_targets.py --cohort BRCA
 ```
 
-The first command extracts patches with CLAM, encodes them and writes one `.h5` per slide with
-`coord`, `feat`, `tpm` and `raw_count` (untransformed, in the order of the gene list). The second
-builds the pathway-level targets: each Hallmark set with at least 10 measured genes is the sum of
-its member genes, written to `data/BRCA-paper-pathway-digital_slide/`. `--encoder` takes `conch`
-(512-d, used for the results above), `exaone`, `uni` or `gigapath`; with a different dimension, set
-`--pca` in `build_microstate_cache.py` to match. Gene sets are read from `MOSPR_GENESETS`
-(MSigDB `h.all.v2025.1.Hs.symbols.gmt`).
-<!-- TODO: patch filtering script and criteria -->
+The first command detects tissue and extracts patch coordinates with the tiler in
+`code/features/tile_extraction/` (tissue/background separation, fat and artifact
+removal, TCGA-BRCA stain normalization, and boundary-clustered tiles filtered to
+&ge;20% tissue pixels with at least `min_tiles` per region — see that directory's
+README for the exact parameters, criteria, and upstream credit), then encodes them
+and writes one `.h5` per slide with `coord`, `feat`, `tpm` and `raw_count`
+(untransformed, in the order of the gene list). The second builds the pathway-level
+targets: each Hallmark set with at least 10 measured genes is the sum of its member
+genes, written to `data/BRCA-paper-pathway-digital_slide/`. `--encoder` takes `conch`
+(512-d, used for the results above), `exaone`, `uni` or `gigapath`; with a different
+dimension, set `--pca` in `build_microstate_cache.py` to match. Gene sets are read
+from `MOSPR_GENESETS` (MSigDB `h.all.v2025.1.Hs.symbols.gmt`).
 
 ## Splits
 
