@@ -11,19 +11,19 @@ import pandas as pd
 from scipy import stats
 
 ROOT = _p.ROOT
-                                     
+
 import os
 SRC = Path(os.environ.get("MOSPR_STATS_SRC", _p.TABLES / "tables/final/alpha0/source"))
 GENE = Path(os.environ.get("MOSPR_STATS_GENE", _p.TABLES / "tables/refit/refit_per_fold_gene.csv"))
 OUT = Path(os.environ.get("MOSPR_STATS_OUT", _p.TABLES / "tables/statistics"))
 
-                                                    
+
 RENAME = {"AbMIL max-pool": "Max", "AbMIL mean-pool": "Mean", "S4Model": "S4MIL"}
 ORDER = ["Max", "Mean", "AbMIL", "HE2RNA", "AbReg", "tRNAformer", "ILRA", "S4MIL",
          "MambaMIL", "SRMambaMIL", "MOSBY", "SEQUOIA VIS", "2DMamba",
          "CPNN", "MoSPR (ours)"]
 COLLECTIONS = ["hallmark", "gobp", "kegg"]
-                                           
+
 PRETTY = {"gene PCC": "PCC", "gene SCC": "SCC",
           "hallmark SCC (median)": "Hallmark", "gobp SCC (median)": "GO-BP",
           "kegg SCC (median)": "KEGG"}

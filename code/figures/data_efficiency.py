@@ -8,14 +8,14 @@ import pathlib
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt              
-import numpy as np              
-import pandas as pd              
-from scipy import stats              
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy import stats
 
-TCRIT = stats.t.ppf(0.975, 3)                
+TCRIT = stats.t.ppf(0.975, 3)
 
-                                                             
+
 LEG = dict(fontsize=7.5, markerscale=0.75, handlelength=1.8, labelspacing=0.28,
            borderaxespad=0.3, handletextpad=0.4)
 
@@ -28,9 +28,9 @@ COLORS = {"MoSPR": "#2a78d6", "CPNN": "#c2352b", "AbMIL": "#e08a1e",
           "tRNAformer": "#eb6834", "MOSBY": "#5c6b73"}
 MARKERS = {"MoSPR": "o", "CPNN": "v", "AbMIL": "P", "MambaMIL": "X",
            "2DMamba": "*", "SEQUOIA VIS": "D", "tRNAformer": "s", "MOSBY": "^"}
-                                                      
-                                             
-              
+
+
+
 ORDER = ["MoSPR", "CPNN", "AbMIL", "MambaMIL",
          "2DMamba", "SEQUOIA VIS", "tRNAformer", "MOSBY"]
 
@@ -45,7 +45,7 @@ def _series(d, col):
     return mu, n, sd
 
 
-MOSPR_TAG = "fpsplit_tv"                                      
+MOSPR_TAG = "fpsplit_tv"
 
 
 def curves(cohort, col):
@@ -60,15 +60,15 @@ def curves(cohort, col):
     return {k: out[k] for k in ORDER if k in out}
 
 
-                                                
-                                          
+
+
 YLIM = {"scc": (0.0, 0.50), "hall_scc": (0.0, 0.60)}
 YLAB = {"scc": "SCC (Gene)", "hall_scc": "SCC (Hallmark, Median)"}
 
 
-XTICKS = {"data": [10, 25, 50, 75, 100],                     
-          "even": [0, 25, 50, 75, 100],                 
-          "fine": [0, 20, 40, 60, 80, 100]}             
+XTICKS = {"data": [10, 25, 50, 75, 100],
+          "even": [0, 25, 50, 75, 100],
+          "fine": [0, 20, 40, 60, 80, 100]}
 
 
 def style_axis(ax, col=None, xt="data", x0=0.0):
@@ -140,7 +140,7 @@ def draw(cur, col, bandkind="none", band_only_ours=False, xt="data", x0=0.0,
             if mode == "drop":
                 full = m[-1]
                 if not full or np.isnan(full):
-                    continue                                    
+                    continue
                 y = [(v / full - 1) * 100 if not np.isnan(v) else np.nan for v in m]
             if np.isnan(y).all():
                 continue
@@ -192,15 +192,15 @@ def draw_combined(cur_gene, cur_path, bandkind="none", band_only_ours=False, xt=
     if legend == "left":
         axes[0].legend(frameon=False, **LEG, loc="lower right")
     plt.tight_layout()
-                                            
-                                           
+
+
     if legend in ("below", "right"):
         h, l = axes[0].get_legend_handles_labels()
         if legend == "below":
             fig.legend(h, l, frameon=False, ncol=4, **{**LEG, "labelspacing": 0.4},
                        loc="lower center", bbox_to_anchor=(0.5, 0.0),
                        columnspacing=1.6)
-            fig.subplots_adjust(bottom=0.20)                                 
+            fig.subplots_adjust(bottom=0.20)
         else:
             fig.legend(h, l, frameon=False, ncol=1, **LEG,
                        loc="center left", bbox_to_anchor=(0.995, 0.5))

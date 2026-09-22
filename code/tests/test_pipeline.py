@@ -1,22 +1,3 @@
-#!/usr/bin/env python
-"""End-to-end check: run the pipeline in this repository and compare with the released numbers.
-
-    python code/tests/test_pipeline.py --data /path/to/datasets --cohort BRCA --fold 0
-    python code/tests/test_pipeline.py --data ... --with-cache     # also rebuild the microstate cache
-
-What it checks, in order:
-  1  the microstate cache loads and its split matches results/per_cohort/*/split/split_patient_4fold.csv
-  2  design_blocks.build_blocks returns [M | S] of width (K+1)*d with finite entries
-  3  train_mospr stage 1 reproduces the released (q, lambda) and stage-1 test SCC
-  4  train_mospr stage 2 reproduces the released test SCC and PCC (gene and pathway)
-  5  ablation reproduces the released Table 3 rows for this fold
-  6  macrostate enrichment reproduces the released Hallmark z for this fold
-  7  reproduce_results.py --check passes
-
-Reference values are read from results/, so the test fails if code and shipped results drift apart.
-Everything runs on CPU. Without --with-cache an existing cache is required
-(MOSPR_RESULTS_ROOT/micro_cache_{cohort}_{tag}_fold{fold}.npz).
-"""
 import argparse
 import importlib.util
 import os
@@ -75,7 +56,7 @@ def main(a):
     res.mkdir(parents=True, exist_ok=True)
     tag, c, f = a.cache_tag, a.cohort, a.fold
 
-    # reference numbers shipped with the repository
+
     ref = pd.read_csv(ROOT / f"results/per_cohort/{c}/results/mospr.csv")
     ref = ref[(ref.fold == f) & (ref.primary)]
     ref_gene = ref[ref.space == "gene"].iloc[0]

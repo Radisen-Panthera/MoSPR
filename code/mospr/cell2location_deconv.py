@@ -36,14 +36,14 @@ import cell2location
 from cell2location.models import RegressionModel
 
 sys.path.insert(0, str(_p.CODE))
-import cohorts              
-import sc_loaders              
+import cohorts
+import sc_loaders
 
 _ap = argparse.ArgumentParser(add_help=False)
 _ap.add_argument("--cohort", default="BRCA")
-                                                                               
-                                                                                
-                                                                               
+
+
+
 _ap.add_argument("--variant", choices=["", "paper"], default="")
 _known = _ap.parse_known_args()[0]
 CFG = cohorts.get(_known.cohort)
@@ -78,7 +78,7 @@ def run_prototype(label_key):
     adata_bulk = sc.read_h5ad(DST / "adata_bulk_processed.h5ad")
     adata_sc, _ = common_gene_view(adata_sc, adata_bulk)
     adata_sc = adata_sc[~adata_sc.obs[label_key].isna()].copy()
-    adata_sc.X = adata_sc.layers["counts"]                                    
+    adata_sc.X = adata_sc.layers["counts"]
     print(f"prototype fit: {adata_sc.shape}, {adata_sc.obs[label_key].nunique()} cell types")
 
     RegressionModel.setup_anndata(adata=adata_sc, batch_key=BATCH_KEY, labels_key=label_key)
@@ -94,7 +94,7 @@ def run_prototype(label_key):
     inf_aver.columns = names
     inf_aver.to_csv(out_csv)
 
-                                                                           
+
     mask = {}
     Xc = adata_sc.layers["counts"]
     for ct in adata_sc.obs[label_key].unique():
@@ -111,10 +111,10 @@ def run_deconv(label_key, resolution, fold):
     adata_bulk = sc.read_h5ad(DST / "adata_bulk_processed.h5ad")
     adata_bulk = adata_bulk[:, inf_aver.index].copy()
 
-                                                    
-                                                                
-                                                                  
-                                                       
+
+
+
+
     _sf = _os_sp.environ.get("MOSPR_SPLIT_FILE", "split.pkl")
     with open(DST / _sf, "rb") as f:
         split = pickle.load(f)
@@ -139,7 +139,7 @@ def run_deconv(label_key, resolution, fold):
         "y_s": adata_vis.uns["mod"]["post_sample_means"]["detection_y_s"],
         "mask": mask_df.reindex(index=inf_aver.index, columns=inf_aver.columns),
     }
-                              
+
     save_dir = DST / (_os_sp.environ.get("MOSPR_C2L_OUTDIR", "") or str(fold))
     save_dir.mkdir(parents=True, exist_ok=True)
     with open(save_dir / f"{resolution}_parameter_dict.pkl", "wb") as f:
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         run_prototype(label_key)
     elif a.stage == "deconv":
         run_deconv(label_key, res, a.fold)
-    else:                                                                        
+    else:
         run_prototype(label_key)
         for fold in range(4):
             run_deconv(label_key, res, fold)

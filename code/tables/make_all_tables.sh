@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Rebuild every table and the data-efficiency figures from the per-fold results in results/.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 PY=${PY:-python}

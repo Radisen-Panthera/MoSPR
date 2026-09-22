@@ -1,15 +1,3 @@
-#!/usr/bin/env python
-"""Encode CLAM patch coordinates into per-slide feature files.
-
-Reads one coordinate .h5 per slide (CLAM `create_patches_fp.py` output), reads the pixels
-with OpenSlide, runs a pathology foundation model, and writes
-
-    <out>/<slide_id>.h5
-        coord (N, 2) int64     level-0 top-left of each patch
-        feat  (N, D) float32   patch embedding
-
-All encoders are gated on Hugging Face; run `huggingface-cli login` first.
-"""
 import argparse
 import pathlib
 

@@ -65,6 +65,7 @@ tests are in `results/tables/`.
 ├── results/
 │   ├── per_cohort/{BRCA,KIRC,LUAD}/   per-fold scores and the 4-fold splits
 │   └── tables/                        every table (.tex) and the CSVs behind it
+├── resources/processed/ evaluated gene list per cohort
 ├── figures/final/       manuscript figures
 ├── checkpoints/         empty in this submission
 └── env/                 pyproject.toml, uv.lock, requirements.txt
@@ -83,17 +84,23 @@ All paths go through `code/mospr/paths.py` and can be redirected with `MOSPR_ROO
 
 ## Data and features
 
-Slides and expression are not included.
+Slides and expression are not included. The evaluated gene lists are in `resources/processed/`
+(14,042 BRCA, 14,295 KIRC, 14,514 LUAD genes).
 
 ```bash
-bash code/features/extract_features.sh \
-    --slides /path/to/svs --out data/BRCA --encoder conch --expr bulk_BRCA.csv
+bash code/features/extract_features.sh --slides /path/to/svs --out data/BRCA-paper-digital_slide \
+    --encoder conch --tpm tpm_BRCA.csv --counts counts_BRCA.csv \
+    --genes resources/processed/eval_genes_paper_BRCA.txt
+python code/features/build_pathway_targets.py --cohort BRCA
 ```
 
-This extracts patches with CLAM, encodes them, and writes one `.h5` per slide with `coord`, `feat`
-and `tpm` (log1p(TPM / sum * 1e4)). `--encoder` takes `conch` (512-d, used for the results above),
-`exaone`, `uni` or `gigapath`; with a different dimension, set `--pca` in
-`build_microstate_cache.py` to match.
+The first command extracts patches with CLAM, encodes them and writes one `.h5` per slide with
+`coord`, `feat`, `tpm` and `raw_count` (untransformed, in the order of the gene list). The second
+builds the pathway-level targets: each Hallmark set with at least 10 measured genes is the sum of
+its member genes, written to `data/BRCA-paper-pathway-digital_slide/`. `--encoder` takes `conch`
+(512-d, used for the results above), `exaone`, `uni` or `gigapath`; with a different dimension, set
+`--pca` in `build_microstate_cache.py` to match. Gene sets are read from `MOSPR_GENESETS`
+(MSigDB `h.all.v2025.1.Hs.symbols.gmt`).
 <!-- TODO: patch filtering script and criteria -->
 
 ## Splits

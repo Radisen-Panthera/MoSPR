@@ -18,7 +18,7 @@ M=[("Max","AbMIL_ilse_max%ts",0),("Mean","AbMIL_ilse_mean%ts",0),("AbMIL","AbMIL
    ("SEQUOIA VIS","SEQUOIA_VIS%ComparisonTrainerts",0),
    ("2DMamba","MambaMIL_2D_stop_sampling%Mamba2DTrainerts",0),
    ("CPNN","ProtoSum_1reg_mse_reg_1e3%DeconvExptsfine",1)]
-                                                                    
+
 def logcpm(X):
     X=np.clip(np.asarray(X,float),0,None); s=X.sum(1,keepdims=True)
     return np.log1p(np.divide(X,s,out=np.zeros_like(X),where=s>0)*1e4)
@@ -47,7 +47,7 @@ for c in ["BRCA","KIRC","LUAD"]:
             ZP=zz(P); gP=ZP.mean(1)
             SY=np.stack([ZY[:,i].mean(1) for i in mem],1)
             SP=np.stack([ZP[:,i].mean(1) for i in mem],1)
-                                                 
+
             r2=np.median([np.corrcoef(SP[:,k],gP)[0,1]**2 for k in range(SP.shape[1])])
             rows.append({"cohort":c,"fold":fold,"model":n,
                          "gfac_scc":spearmanr(gY,gP).statistic,

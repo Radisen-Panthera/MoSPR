@@ -1,11 +1,3 @@
-# Conda environment for the comparison methods (the MoSPR pipeline itself uses env/ at the repo root).
-#
-#   conda env create -f code/baselines/env/environment.yml
-#   conda activate mospr-baselines
-#
-# Covers AbMIL (all pooling variants), AbReg, ILRA, S4MIL, MOSBY, HE2RNA, SEQUOIA VIS and
-# tRNAformer out of the box. Three extras are installed separately because they compile CUDA
-# kernels or pull a large probabilistic stack; see the notes at the bottom.
 name: mospr-baselines
 channels:
   - conda-forge
@@ -13,8 +5,6 @@ dependencies:
   - python=3.11
   - pip
   - pip:
-      # PyTorch built for the GPU you have. The wheel below matches CUDA 12.8 (sm_120, Blackwell);
-      # for older cards use the cu121 index instead.
       - --extra-index-url https://download.pytorch.org/whl/cu128
       - torch==2.8.0
       - lightning==2.6.5
@@ -28,20 +18,3 @@ dependencies:
       - pyyaml==6.0.3
       - tqdm
       - openslide-python        # only needed for feature extraction
-#
-# Extras
-# ------
-# 1) MambaMIL and SRMambaMIL need the MambaMIL fork of mamba-ssm plus causal-conv1d 1.1.1:
-#        bash code/baselines/scripts/install_mambamil_fork.sh
-#    Versions used for the reported runs: mamba_ssm 1.1.2 (fork), causal_conv1d 1.1.1.
-# 2) 2DMamba needs its CUDA kernel compiled for your architecture:
-#        bash code/baselines/scripts/build_2dmamba_kernel.sh
-#    On CUDA 13 a few symbols removed from cub have to be shimmed; the script does that.
-#    The pure-PyTorch fallback needs about 32 GB per slide and is not practical.
-# 3) CPNN (ProtoSum) needs cell-type deconvolution before training:
-#        pip install cell2location==0.1.5 scvi-tools==1.4.2 anndata==0.12.19 scanpy==1.11.5
-#        bash code/baselines/scripts/c2l_psplit.sh
-#
-# Reference machine: RTX PRO 6000 Blackwell (sm_120), CUDA 13.0 driver, torch 2.13.0+cu130,
-# Python 3.11.15. The pinned torch above is the last version published for cu128; if your driver
-# is newer you can install a matching cu130 build instead - nothing in the code depends on it.

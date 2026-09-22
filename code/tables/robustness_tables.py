@@ -42,7 +42,7 @@ def main(a):
     g = g[g.n == 4]
     g.round(5).to_csv(T / f"robustness_summary_{a.collection}.csv", index=False)
 
-                  
+
     print(f"\n===== {a.collection} — MoSPR rank per scorer / winner =====")
     for c in a.cohorts:
         line = []
@@ -80,7 +80,7 @@ def main(a):
     L += [r"\bottomrule", r"\end{tabular}", ""]
     (T / f"appendix_robustness_{a.collection}.tex").write_text("\n".join(L))
 
-                     
+
     gf = (pd.read_csv(T / "pathway_global_factor.csv")
           .groupby(["cohort", "model"])[["gfac_scc", "gfac_share_of_setscore_R2"]].mean()
           .reset_index())

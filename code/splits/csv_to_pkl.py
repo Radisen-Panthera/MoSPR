@@ -1,14 +1,3 @@
-#!/usr/bin/env python
-"""Rebuild the split pickle the pipeline reads from the slide-id CSV shipped in results/.
-
-    python code/splits/csv_to_pkl.py --cohort BRCA --data /path/to/datasets
-
-The CSV (results/per_cohort/{cohort}/split/split_patient_4fold.csv) holds fold, split and slide id.
-This writes <data>/{cohort}-paper-digital_slide/split_patient.pkl, a dict
-{fold: {"train"|"val"|"test": [Path, ...]}} of absolute paths under the given data root, which is
-what dataloaders and build_microstate_cache.py expect. Paths are rebuilt locally so the CSV itself
-stays free of machine-specific paths.
-"""
 import argparse
 import pathlib
 import pickle

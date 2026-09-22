@@ -12,7 +12,7 @@ from scipy.stats import rankdata
 from sklearn.linear_model import Ridge
 
 sys.path.insert(0, str(_p.CODE))
-from spatial_proteome import pathways              
+from spatial_proteome import pathways
 
 RES = _p.RESULTS
 PROC = _p.RESULTS / "processed"
@@ -33,10 +33,10 @@ def build_basis(label_key, genes, pathway_members=None, c2l_dir=None):
     inf = pd.read_csv((c2l_dir or C2L) / f"inf_aver_{label_key}.csv",
                       index_col=0)
     assert list(inf.index) == list(genes), "prototype gene axis differs from eval genes"
-    raw = inf.values                                                         
+    raw = inf.values
     if pathway_members is not None:
         raw = np.stack([raw[idx].sum(axis=0) for idx in pathway_members])
-    return to_target_space(raw).T, list(inf.columns)              
+    return to_target_space(raw).T, list(inf.columns)
 
 
 def corr_cols(a, b):
@@ -52,10 +52,10 @@ def metrics(Y, P):
 
 
 def prototype_decompose(Yz, B, tr):
-    G = np.linalg.solve(B @ B.T + 1e-6 * np.eye(len(B)), B)                          
-    V = Yz @ G.T                                                                      
-    R = Yz - V @ B                                                                 
-    Rtr = R[tr] - R[tr].mean(axis=0, keepdims=True)                                      
+    G = np.linalg.solve(B @ B.T + 1e-6 * np.eye(len(B)), B)
+    V = Yz @ G.T
+    R = Yz - V @ B
+    Rtr = R[tr] - R[tr].mean(axis=0, keepdims=True)
     _, _, Vt = np.linalg.svd(Rtr, full_matrices=False)
     return V, R, Vt
 
@@ -91,7 +91,7 @@ def fit_two_branch(X_v, X_q, Yz, tr, va, B, V, R, Vt, ranks, alphas_v,
         pred = pred + mz.predict(X_q) @ U
     p = {"alpha_v": av, "alpha_q": aq, "rank": r}
     if return_w:
-                                                                 
+
         w = {"W_v": mv.coef_, "b_v": mv.intercept_, "B": B}
         if r:
             w.update(W_q=mz.coef_, b_q=mz.intercept_, U=U)
@@ -152,7 +152,7 @@ def main(a):
         ymu, ysd = Y[tr].mean(axis=0), Y[tr].std(axis=0)
         ysd[ysd == 0] = 1.0
         Yz = (Y - ymu) / ysd
-        Bz = (B - ymu) / ysd                                                             
+        Bz = (B - ymu) / ysd
 
         cand = {}
         p, alpha, r = fit_hybrid(X, Yz, tr, va, Bz, RANKS, ALPHAS)

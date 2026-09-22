@@ -26,7 +26,7 @@ f52 = importlib.util.module_from_spec(_s); _s.loader.exec_module(f52)
 
 RES = Path(str(_p.RESULTS))
 OUT = Path(str(_p.TABLES / "figures"))
-                                                
+
 COLORS = ["#0000FF", "#FFFF00", "#9D00FF"]
 
 
@@ -59,7 +59,7 @@ def slide_candidates(cache, labels, cen, n_probe, min_piece=0.6):
 
 def fold_z(df, npz, fold, K):
     i = list(npz["folds"]).index(fold)
-    perm = npz["perm"][i]                                        
+    perm = npz["perm"][i]
     sub = df[df.fold == fold]
     out = {}
     for j in range(K):
@@ -90,9 +90,9 @@ def main(a):
     where = ("test" if slide in set(sl[cache["idx_te"]])
              else "val" if slide in set(sl[cache["idx_va"]]) else "train")
     if where != "test":
-                                                  
-                                                    
-                                      
+
+
+
         assert a.allow_nontest, (f"{slide}  is {where} of fold {a.fold}. "
                                  f"pass --allow_nontest and state it in the caption")
         print(f"[fold{a.fold}] note: this slide is {where}", flush=True)
@@ -104,7 +104,7 @@ def main(a):
     thumb = np.asarray(thumb)
     mass = np.bincount(macro, minlength=K) / len(macro)
 
-                                                   
+
     if a.states:
         states = sorted(a.states)
         print(f"[fold{a.fold}] states given explicitly {states}", flush=True)
@@ -140,8 +140,8 @@ def main(a):
                        color=COLORS[i % len(COLORS)] if a.bar_color == "panel" else f52.BAR)
         axb.set_xlabel("Enrichment $z$", fontsize=6.5, labelpad=1)
 
-                                                        
-                                                        
+
+
     tag = f"fold{a.fold}_{slide}"
     p = out_dir / f"fig2_cand_{a.cohort}_{tag}.png"
     fig.savefig(p, dpi=220, bbox_inches="tight", pad_inches=0.02)

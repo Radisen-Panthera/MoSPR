@@ -9,17 +9,17 @@ import pandas as pd
 from scipy import stats
 
 R = _p.ROOT
-                                                 
+
 import os
 SRC = os.environ.get("MOSPR_TABLE_SRC", str(_p.TABLES / "per_cohort"))
 TCRIT = stats.t.ppf(0.975, 3)
 OURS = "MoSPR (ours)"
 COH = ["BRCA", "KIRC", "LUAD"]
 
-                                                   
-                                                     
-                                                    
-                                        
+
+
+
+
 ROWS = [("AbMIL max-pool", r"Max~\citep{wang2018revisiting}"),
         ("AbMIL mean-pool", r"Mean~\citep{wang2018revisiting}"),
         ("AbMIL", r"AbMIL~\citep{ilse2018abmil}"),
@@ -58,7 +58,6 @@ def perfold(c, tag=""):
 
 def fmt_p(p):
     return r"\textless.001" if p < 1e-3 else f"{p:.3f}"
-
 
 
 HEADS = {

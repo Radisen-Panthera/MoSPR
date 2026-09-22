@@ -1,13 +1,3 @@
-# Baseline training environment (comparison methods only).
-#
-#   docker build -t mospr-baselines -f code/baselines/env/Dockerfile .
-#   docker run --gpus all -it --rm \
-#       -v /path/to/data:/data -v $PWD:/workspace mospr-baselines
-#
-# The image carries everything the plain MIL/MIR baselines need. The Mamba kernels and the
-# cell2location stack are left as opt-in build args because they compile against your GPU
-# architecture and add several gigabytes.
-# Not built and tested end to end: it states the dependency set of the reported runs.
 ARG CUDA_IMAGE=nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
 FROM ${CUDA_IMAGE}
 
@@ -27,13 +17,11 @@ RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/wh
         numpy==2.1.3 pandas==2.3.3 scipy==1.17.1 scikit-learn==1.9.0 pyyaml==6.0.3 \
         tqdm openslide-python
 
-# MambaMIL / SRMambaMIL: the fork of mamba-ssm plus causal-conv1d 1.1.1
 RUN if [ "$WITH_MAMBA" = "1" ]; then \
         pip install --no-cache-dir causal-conv1d==1.1.1 && \
         pip install --no-cache-dir "mamba-ssm @ git+https://github.com/isyangshu/MambaMIL.git" ; \
     fi
 
-# CPNN (ProtoSum) deconvolution stack
 RUN if [ "$WITH_CELL2LOCATION" = "1" ]; then \
         pip install --no-cache-dir cell2location==0.1.5 scvi-tools==1.4.2 \
             anndata==0.12.19 scanpy==1.11.5 ; \

@@ -12,11 +12,11 @@ RES = RESULTS
 SRC = os.environ.get("MOSPR_TABLE_SRC", str(_p.TABLES / "per_cohort"))
 COH = ["BRCA", "KIRC", "LUAD"]
 
-                                                    
-                                                       
-                                                             
-                                           
-                                                 
+
+
+
+
+
 ROWS1 = [("AbMIL max-pool", r"Max~\citep{wang2018revisiting}"),
  ("AbMIL mean-pool", r"Mean~\citep{wang2018revisiting}"),
  ("AbMIL", r"AbMIL~\citep{ilse2018abmil}"),
@@ -61,9 +61,9 @@ HDR = """% Setting: filtered patches (BRCA 15,483), patient-level split, train+v
 def load1(alpha_tag):
     tab = {}
     for c in COH:
-                                                               
-                                        
-                                                                    
+
+
+
         f = R / f"{SRC}/{c}/results/baselines_summary.csv"
         if not f.exists():
             f = R / f"Baseline_Filtered_PatientSplit/{c}/results/baselines_summary.csv"
@@ -103,7 +103,7 @@ def main(a):
     out.mkdir(parents=True, exist_ok=True)
     hdr = HDR.format(alpha=a.alpha)
 
-                 
+
     tab = load1(tag)
     cols = [(c, k) for c in COH for k in ["PCC", "SCC"]]
     def g1(m, j):
@@ -122,13 +122,13 @@ Method & PCC & SCC & PCC & SCC & PCC & SCC\\
 \end{tabular}""")
     print(f"  table1_gene.tex")
 
-                 
+
     COLL = ["hallmark", "gobp", "kegg"]
     cols2 = [(c, k) for c in COH for k in COLL]
     p2 = {}
     for c in COH:
-                                                               
-                                                           
+
+
         f = RES / f"pathway_all_{c}_fpsplit{tag}_tv.csv"
         if f.exists():
             d = pd.read_csv(f)
@@ -155,7 +155,7 @@ Method & Hallmark & GO-BP & KEGG & Hallmark & GO-BP & KEGG & Hallmark & GO-BP & 
 \end{tabular}""")
         print(f"  table2_pathway.tex")
 
-                 
+
     f3 = RES / f"ablation_v2_BRCA_fpsplit{tag}_tv_p512.csv"
     if f3.exists():
         d = pd.read_csv(f3).groupby("variant")[["gene_SCC", "hall_SCC"]].mean()

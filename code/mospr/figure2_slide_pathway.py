@@ -22,7 +22,7 @@ import matplotlib.gridspec as gridspec
 from matplotlib.patches import Rectangle
 
 sys.path.insert(0, str(_p.CODE))
-from spatial_proteome import spectral              
+from spatial_proteome import spectral
 
 RES = _p.RESULTS
 OUT = _p.TABLES / "figures"
@@ -31,14 +31,14 @@ WSI_DIR = Path(os.environ.get("MOSPR_WSI_DIR", str(_p.DATA / "wsi")))
 PAIRS = Path(os.environ.get("MOSPR_SLIDE_MANIFEST", str(_p.DATA / "manifests/pairs_named.csv")))
 
 PATCH_PX, SEED = 256, 42
-                                             
+
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100",
            "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
 UP, DOWN = "#c0392b", "#2166ac"
-BAR = "#5a5a5a"                                        
+BAR = "#5a5a5a"
 
-                                                          
-                                        
+
+
 OVERLAY = ["#00E5FF", "#76FF03", "#FFD600", "#00BFA5", "#64FFDA"]
 
 
@@ -101,8 +101,8 @@ def top_sets(df, k, n):
 def panel_slide(ax, thumb, coords, macro, k, scale, mass, color, gray=True,
                 badge=False):
     if gray:
-                                                     
-                                    
+
+
         g = (thumb @ np.array([0.299, 0.587, 0.114]))
         ax.imshow(g, cmap="gray", vmin=0, vmax=255)
     else:
@@ -156,7 +156,7 @@ def panel_bars(ax, mean, lo, hi, xlim, whisker=False, labels_left=False, a_font=
         s.replace("HALLMARK_", "").replace("_", " ").title(), 22)
         for s in mean.index], fontsize=a_font)
     if not labels_left:
-        ax.yaxis.tick_right()                                 
+        ax.yaxis.tick_right()
     ax.tick_params(axis="y", length=0, pad=3)
     ax.set_xlim(*xlim)
     ax.tick_params(axis="x", labelsize=a_font)
@@ -282,7 +282,7 @@ def _draw_single(a, df, thumb, coords, macro, scale, mass, K, slide):
                            hspace=0.30, wspace=0.75)
 
     ax = fig.add_subplot(gs[0, :])
-    ax.imshow(thumb)                                         
+    ax.imshow(thumb)
     box = PATCH_PX * scale
     for k in states:
         for xy in coords[macro == k]:
@@ -314,7 +314,7 @@ def _draw_single(a, df, thumb, coords, macro, scale, mass, K, slide):
                      fontsize=13, y=0.955)
     p = OUT / f"fig_macrostate_slide_pathway_{a.cohort}{a.suffix}.png"
     fig.savefig(p.with_suffix(".png"), dpi=200, bbox_inches="tight")
-    (pdf_dir := p.parent / "pdf").mkdir(exist_ok=True)                   
+    (pdf_dir := p.parent / "pdf").mkdir(exist_ok=True)
     fig.savefig(pdf_dir / p.with_suffix(".pdf").name, dpi=200, bbox_inches="tight")
     plt.close(fig)
     print("written:", p, "(+ .pdf)")
@@ -326,9 +326,9 @@ def _draw(a, df, thumb, coords, macro, scale, mass, K, slide):
 
     states, rep = pick_states(df, mass, K, a.n_states, a.min_mass, a.select,
                               coords, macro)
-                                                
-                                               
-                                               
+
+
+
     hl = [c.strip() for c in a.highlight.split(",") if c.strip()]
     col = ({k: PALETTE[k] for k in states} if a.state_palette
            else {k: hl[i % len(hl)] for i, k in enumerate(states)})
@@ -341,9 +341,9 @@ def _draw(a, df, thumb, coords, macro, scale, mass, K, slide):
     ncol = min(a.ncols, n)
     nrow = int(np.ceil(n / ncol))
     h_img, w_img = thumb.shape[:2]
-    cw = a.col_width                                                  
-    ih = cw * h_img / w_img                                               
-    bh = (0.34 * a.top + 0.35) if a.bar_orient == "h" else 1.9            
+    cw = a.col_width
+    ih = cw * h_img / w_img
+    bh = (0.34 * a.top + 0.35) if a.bar_orient == "h" else 1.9
     fig = plt.figure(figsize=(cw * ncol, (ih + bh) * nrow))
     outer = gridspec.GridSpec(nrow, ncol, figure=fig, wspace=a.wspace, hspace=0.12,
                               left=0, right=1, bottom=0, top=1)
@@ -355,8 +355,8 @@ def _draw(a, df, thumb, coords, macro, scale, mass, K, slide):
                     mass[k], col[k], gray=not a.color_tissue, badge=a.badge)
         m, lo, hi = tops[k]
         bcol = col[k] if a.bar_color == "panel" else BAR
-                                                       
-                            
+
+
         frac = a.label_frac if a.bar_orient == "h" else 0.10
         low = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=cell[1],
                                                width_ratios=[frac, 1 - frac],
@@ -378,7 +378,7 @@ def _draw(a, df, thumb, coords, macro, scale, mass, K, slide):
                      fontsize=12, y=1.02)
     p = OUT / f"fig_macrostate_slide_pathway_{a.cohort}{a.suffix}.png"
     fig.savefig(p.with_suffix(".png"), dpi=220, bbox_inches="tight", pad_inches=0.02)
-    (pdf_dir := p.parent / "pdf").mkdir(exist_ok=True)                   
+    (pdf_dir := p.parent / "pdf").mkdir(exist_ok=True)
     fig.savefig(pdf_dir / p.with_suffix(".pdf").name, dpi=220, bbox_inches="tight",
                 pad_inches=0.02)
     plt.close(fig)
