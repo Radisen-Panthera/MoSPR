@@ -6,18 +6,16 @@ results, in place of CLAM. Output format is unchanged from the rest of the pipel
 patch), so `code/features/encode_patches.py` reads it exactly as it would read CLAM's
 output.
 
-## Origin
+## Reference
 
-Adapted from Sungmin Lee's
-[Pathology-WSI-Tile-Sampling-System](https://github.com/CocoSungMin/Pathology-WSI-Tile-Sampling-System)
-(MIT license per that repository). If you use this tiling code, please cite it:
+The tiling procedure follows G2L. If you use this code, please cite:
 
 ```bibtex
-@software{pathology_tile_sampling,
-  title={Pathology WSI Tile Sampling System},
-  author={Sungmin Lee},
-  year={2025},
-  url={https://github.com/CocoSungMin/Pathology-WSI-Tile-Sampling-System}
+@article{cho2025g2l,
+  title={G2L: From Giga-Scale to Cancer-Specific Large-Scale Pathology Foundation Models via Knowledge Distillation},
+  author={Cho, Yesung and Lee, Sungmin and Lee, Geongyu and Lee, Minkyung and Park, Jongbae and Shin, Dongmyung},
+  journal={arXiv preprint arXiv:2510.11176},
+  year={2025}
 }
 ```
 
@@ -40,15 +38,15 @@ Adapted from Sungmin Lee's
   runs masking + tiling, and writes `<slide_id>.h5`.
 - `tile_processing.py` — command-line entry point.
 
-## Differences from the upstream tool
+## Differences from the original defaults
 
 The copy here is the one that produced the coordinates behind the reported results.
-It differs from the upstream defaults in three places:
+It differs from the original defaults in three places:
 
 - the thumbnail and the coordinate scaler are read from the same pyramid level;
-- the tile foreground threshold is 50% of the mask footprint (upstream 70%);
+- the tile foreground threshold is 50% of the mask footprint (originally 70%);
 - red pen-mark removal uses a YUV V &ge; 225 threshold with a 3&times;3 cleanup kernel
-  (upstream V &ge; 140 with a 7&times;7 kernel and dilation).
+  (originally V &ge; 140 with a 7&times;7 kernel and dilation).
 
 ## Parameters used for BRCA / KIRC / LUAD
 
