@@ -94,11 +94,11 @@ bash code/features/extract_features.sh --slides /path/to/svs --out data/BRCA-pap
 python code/features/build_pathway_targets.py --cohort BRCA
 ```
 
-The first command detects tissue and extracts patch coordinates with the tiler in
-`code/features/tile_extraction/` (tissue/background separation, fat and artifact
-removal, TCGA-BRCA stain normalization, and boundary-clustered tiles filtered to
-&ge;20% tissue pixels with at least `min_tiles` per region — see that directory's
-README for the exact parameters, criteria, and upstream credit), then encodes them
+The first command detects tissue and extracts 256-px level-0 patch coordinates with the
+tiler in `code/features/tile_extraction/` (tissue/background separation, fat, pen and
+artifact removal, tiles covering at least 50% foreground, grouped by tissue region and
+kept in regions of at least 5 tiles; no stain normalization; see that directory's
+README for the exact criteria and upstream credit), then encodes them
 and writes one `.h5` per slide with `coord`, `feat`, `tpm` and `raw_count`
 (untransformed, in the order of the gene list). The second builds the pathway-level
 targets: each Hallmark set with at least 10 measured genes is the sum of its member
