@@ -1,0 +1,27 @@
+{
+  "reference_stats": {
+    "hue_mean": 155.6089630126953,
+    "hue_std": 7.053215691710097,
+    "sat_mean": 77.80697250366211,
+    "sat_std": 18.8490529487877,
+    "val_mean": 185.6332015991211,
+    "val_std": 18.60670994117552,
+    "tissue_ratio": 0.28279697097992335
+  },
+  "normalization_params": {
+    "target_hue": 160.0,
+    "target_sat": 120.0,
+    "target_val": 180.0,
+    "hue_tolerance": 15.0,
+    "sat_tolerance": 40.0,
+    "brightness_threshold": 240,
+    "saturation_threshold": 30
+  },
+  "creation_date": "2025-06-10T16:18:14.300234",
+  "dataset_info": {
+    "total_slides": 1133,
+    "dataset_path": "/home/nas2_fast/Data/Pathology_project/TCGA-BRCA/wsi",
+    "creation_timestamp": "2025-06-10T16:18:14.300227"
+  },
+  "version": "1.0"
+}
