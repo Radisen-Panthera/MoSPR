@@ -1,11 +1,8 @@
 --- a/model/build_model.py
 +++ b/model/build_model.py
-@@ -22,12 +22,15 @@
- )
+@@ -23,11 +23,12 @@
  
  
-+# Upstream wraps the three imports in one try, so one missing package skips all.
-+# MambaMIL_2D runs on the official mamba-ssm alone, so it is imported separately.
  try:
 -    from model.comparisons import (
 -        MambaMILvanira,
@@ -21,7 +18,7 @@
  except ImportError:
      pass
  
-@@ -41,7 +44,8 @@
+@@ -41,7 +42,8 @@
          "BRCA": 14052,
      }
      IN_DIM = {"feature": 768, "feature_opt": 1536, "feature_conch": 512}

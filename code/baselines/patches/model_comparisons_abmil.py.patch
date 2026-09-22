@@ -1,27 +1,23 @@
 --- a/model/comparisons/abmil.py
 +++ b/model/comparisons/abmil.py
-@@ -95,7 +95,14 @@
+@@ -95,7 +95,10 @@
          initialize_weights(self)
  
          self.version = args.version
 -        if ("max" in self.version) or ("mean" in self.version):
-+        # ilse_mean / ilse_max: the pooling comparison of Ilse et al. (2018).
-+        # The fc(512->512)+ReLU embedding is kept exactly as in the attention variant
-+        # and only the pooling changes. The released mean/max drop that embedding too,
-+        # which reduces them to "average -> linear".
 +        self.ilse = self.version in ("ilse_mean", "ilse_max")
 +        if self.ilse:
-+            pass                                      # head stays Linear(size[1])
++            pass
 +        elif ("max" in self.version) or ("mean" in self.version):
              self.head = nn.Linear(size[0], n_classes)
  
          self.prop = cfg.MODEL.prop
-@@ -110,6 +117,9 @@
+@@ -110,6 +113,9 @@
              logits = logits.mean(0)
              return logits
  
 +        elif self.ilse:
-+            e = self.attention_net[1](self.attention_net[0](h))   # fc + ReLU
++            e = self.attention_net[1](self.attention_net[0](h))
 +            M = (e.mean(0) if self.version == "ilse_mean" else e.max(0)[0]).unsqueeze(0)
          elif "mean" in self.version:
              M = h.mean(0).unsqueeze(0)

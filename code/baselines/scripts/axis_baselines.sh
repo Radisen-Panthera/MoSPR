@@ -37,7 +37,7 @@ export CPNN_STAGE1_SUFFIX=${STAGE1:-}
 export CPNN_FT_LR=${CPNN_FT_LR:-1e-4} CPNN_FT_EPOCHS=${CPNN_FT_EPOCHS:-8}
 case "$COND" in
   psplit|psplit_tv) export CPNN_C2L_PREFIX="${DTAG}ps" ;;
-  dsplit|dsplit_tv) export CPNN_C2L_PREFIX="dup" ;;   # {cohort}/dup0/ (fold 0)
+  dsplit|dsplit_tv) export CPNN_C2L_PREFIX="dup" ;;
   *)                unset CPNN_C2L_PREFIX ;;
 esac
 export OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS:-4}
@@ -70,7 +70,7 @@ if [ -n "${ONLY:-}" ]; then
   JOBS=("${_keep[@]}")
 fi
 
-best_epoch(){  # $1=cohort $2=tag $3=fold -> E* or empty
+best_epoch(){
   awk -F, -v c="$1" -v t="$2" -v f="$3" \
     'NR>1 && $1==c && $2==t && $3==f && $4==1 && $5!="" {print $5; exit}' "$BEST"
 }
@@ -89,7 +89,7 @@ declare -A RUNNAME=(
   [clam_mb]="CLAM_MB%ts"        [dsmil]="DSMIL%ts"
   [ilse_mean]="AbMIL_ilse_mean%ts" [ilse_max]="AbMIL_ilse_max%ts"
 )
-done_run(){   # $1=dataset $2=fold $3=tag
+done_run(){
   local rn=${RUNNAME[$3]:-}
   [ -z "$rn" ] && return 1
   [ -s "$REPO/outputs/$2/$1-${rn/\%/$2}$SFX.txt" ]

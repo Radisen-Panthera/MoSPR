@@ -1,22 +1,10 @@
 --- a/model/comparisons/mamba_mil2d.py
 +++ b/model/comparisons/mamba_mil2d.py
-@@ -33,7 +33,20 @@
+@@ -33,7 +33,8 @@
          mambamil_state_dim = 8
          mambamil_inner_layernorms = False
          pscan = True
 -        cuda_pscan = True
-+        # pscan_cuda/ in this repository was a one-line shim (`from .pscan import *`),
-+        # so pscan_2d.py crashed with NameError on pscan_cuda.fwd (the authors report
-+        # no result for this model either - 2DMamba is absent from PCC_SCC_results).
-+        # We built the cuda_kernel from the official repository
-+        # (AtlasAnalyticsLab/2DMamba) for sm_120 and placed pscan.so in this folder.
-+        # Only symbols removed in CUDA 13 were filled in (cuda_stdint.h,
-+        # cub::CTA_SYNC/LaneId/WarpMask, CUB_MAX); the computation is unchanged.
-+        # Build notes: scripts/build_2dmamba_kernel.sh
-+        #
-+        # The pure-PyTorch fallback (use_cuda=False) unrolls a WSI onto a 1025x1025
-+        # dense grid padded to a power of two, asking ~32GB for a single slide - it
-+        # OOMs even on a 94GB card, so the kernel is required.
 +        import os as _os
 +        cuda_pscan = _os.environ.get("CPNN_MAMBA2D_CUDA", "1") == "1"
          mamba_2d_max_w = 1024 * 256

@@ -1,12 +1,7 @@
 --- a/model/comparisons/__init__.py
 +++ b/model/comparisons/__init__.py
-@@ -8,12 +8,16 @@
- from .ilra import ILRA
- from .sum_exp_model import SumExpModel
+@@ -10,10 +10,11 @@
  
-+# Upstream wraps both imports in one try, so a failing mamba_mil (which needs
-+# SRMamba/BiMamba) also skips mamba_mil2d. MambaMIL_2D only needs the local
-+# mamba_simple.py, so the blocks are split here.
  try:
      from .mamba_mil import SRMambaMIL, MambaMILvanira
 +except ImportError:

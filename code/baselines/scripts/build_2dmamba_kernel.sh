@@ -3,7 +3,7 @@ set -euo pipefail
 R=${MOSPR_ROOT}
 ENVDIR=${MAMBA_ENV:-$R/envs/cpnn-mamba}
 WORK=${WORK:-/tmp/2dmamba_build}
-ARCH=${ARCH:-120}            # sm_120 = RTX PRO 6000 Blackwell
+ARCH=${ARCH:-120}
 DEST=${MOSPR_CPNN_REPO:-$R/external/CPNN}/model/comparisons/pscan_cuda
 
 mkdir -p "$WORK"; cd "$WORK"

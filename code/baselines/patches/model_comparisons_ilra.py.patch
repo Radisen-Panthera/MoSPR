@@ -1,26 +1,14 @@
 --- a/model/comparisons/ilra.py
 +++ b/model/comparisons/ilra.py
-@@ -116,8 +116,25 @@
+@@ -116,8 +116,13 @@
          n_classes = cfg.MODEL.output_dim
          hidden_feat = 256
          num_heads = 8
 -        topk = 2
 -        ln = False
-+        # topk enters as the number of inducing points (num_inds).
-+        # The commented-out signature (line 111) and the dead __main__ call (line 188)
-+        # both use topk=1 while the live code uses 2 - a trace of an edit made before
-+        # release. KIRC/LUAD do not diverge (mse is normal) but score low, so this is
-+        # one candidate cause. The default is left at the released value, 2.
 +        import os as _os2
 +        topk = int(_os2.environ.get("CPNN_ILRA_TOPK", 2))
 +
-+        # ln (LayerNorm) is hard-coded to False upstream. The original task is binary
-+        # classification, which tolerates that; here the model regresses 14k genes
-+        # under MSE. Measured: valid_loss is orders of magnitude above a healthy run
-+        # (fold0 2.010 vs 0.037) and one fold diverges to [-359.96, 827.14].
-+        # The authors report a stable sd of 0.0172, so the released value may differ
-+        # from what they ran; that is checked in a separate experiment.
-+        # The default is left at the released value, False.
 +        import os as _os
 +        ln = _os.environ.get("CPNN_ILRA_LN", "0") == "1"
 +        if ln:

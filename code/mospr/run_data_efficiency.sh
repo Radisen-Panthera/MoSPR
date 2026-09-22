@@ -5,7 +5,7 @@ PY=${PY:-python}
 RES=${MOSPR_RESULTS_ROOT:-$R/results/run}
 COHORT=${COHORT:-BRCA}
 FRACS=${FRACS:-"10 25 50 75"}
-PAR=${PAR:-4}                     # concurrent cache builds
+PAR=${PAR:-4}
 log(){ echo "[$(date '+%m-%d %H:%M:%S')] $*"; }
 
 export MOSPR_DATASET_ROOT=${MOSPR_DATASET_ROOT:-$R/data}
@@ -46,7 +46,7 @@ RES = pathlib.Path(str(_p.RESULTS))
 cohort, fracs = sys.argv[1], sys.argv[2].split()
 old = pd.read_csv(RES / f"deff_mospr_{cohort}_fpsplit_tv.csv")
 parts = [pd.read_csv(RES / f"deff_mospr_{cohort}_lf_f{fr}.csv") for fr in fracs]
-parts.append(old[old.frac >= 1.0])          # the full-data point is leak-free by definition
+parts.append(old[old.frac >= 1.0])
 df = pd.concat(parts).sort_values(["fold", "frac"]).reset_index(drop=True)
 out = RES / f"deff_mospr_{cohort}_fpsplit_tv_leakfree.csv"
 df.to_csv(out, index=False)

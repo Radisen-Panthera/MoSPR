@@ -25,7 +25,7 @@ pick_gpu(){
   done
 }
 MAXJOBS=${MAXJOBS:-6}
-running_c2l(){   # $1=cohort $2=fold - is the same job already running?
+running_c2l(){
   for pid in $(pgrep -u "$(id -u)" -f "cell2location_deconv.py" 2>/dev/null); do
     local _cl; _cl=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null)
     case "$_cl" in *"--cohort $1 "*"--fold $2"*) return 0 ;; esac
