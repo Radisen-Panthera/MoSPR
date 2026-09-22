@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# Patching follows the tissue-detection + boundary-clustered tiling pipeline in
-# code/features/tile_extraction/ (vendored from Sungmin Lee's
-# Pathology-WSI-Tile-Sampling-System; see that directory's README for credit/citation
-# and for exactly what --min_tiles / --is_normalized do), not CLAM.
 set -euo pipefail
 
 SLIDES=""; OUT=""; ENCODER="conch"; PATCH=256; LEVEL=0; BATCH=256; WORKERS=8; DEVICE="cuda"
-MIN_TILES=5; NORMALIZE=True
+MIN_TILES=5; NORMALIZE=False
 TPM=""; COUNTS=""; GENES=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -26,7 +22,7 @@ while [ $# -gt 0 ]; do
     *) echo "unknown option: $1"; exit 1 ;;
   esac
 done
-[ -n "$SLIDES" ] && [ -n "$OUT" ] || { echo "usage: $0 --slides DIR --out DIR [--encoder conch|exaone|uni|gigapath] [--tpm CSV --genes TXT [--counts CSV]]"; exit 1; }
+[ -n "$SLIDES" ] && [ -n "$OUT" ] || { echo "usage: $0 --slides DIR --out DIR [--encoder conch|exaone|uni|gigapath] [--min_tiles N] [--normalize True|False] [--tpm CSV --genes TXT [--counts CSV]]"; exit 1; }
 PY=${PY:-python}
 mkdir -p "$OUT/patches" "$OUT/sample_pair_feature_${ENCODER}"
 

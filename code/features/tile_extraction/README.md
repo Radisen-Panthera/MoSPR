@@ -8,7 +8,7 @@ output.
 
 ## Origin
 
-Vendored (with minor path fixes, no logic changes) from Sungmin Lee's
+Adapted from Sungmin Lee's
 [Pathology-WSI-Tile-Sampling-System](https://github.com/CocoSungMin/Pathology-WSI-Tile-Sampling-System)
 (MIT license per that repository). If you use this tiling code, please cite it:
 
@@ -29,27 +29,41 @@ Vendored (with minor path fixes, no logic changes) from Sungmin Lee's
   histogram) deciding whether a slide needs color/stain adjustment before masking.
 - `enhanceStain.py` — ImageJ-style thumbnail contrast enhancement.
 - `stainNorm.py` — TCGA-BRCA stain normalization (fit/export/load a normalization
-  template; only `load_template` + apply is used at inference time here).
-- `Tiling.py` — tile-coordinate extraction over the foreground mask, boundary-based
-  region clustering, and per-tile tissue-fraction filtering (keeps tiles with
-  &ge;20% valid tissue pixels).
+  template). The template is loaded at start-up but only applied when
+  `--is_normalized True`; it was not applied for the reported results.
+- `Tiling.py` — tile-coordinate extraction over the foreground mask. A tile is kept
+  when at least 50% of its footprint on the thumbnail mask is foreground, its centre
+  pixel is foreground and at least two of its border pixels are foreground. Contours
+  smaller than 0.05% of the foreground (in tile units) are dropped, and tiles are then
+  grouped by contour; groups with fewer than `min_tiles` tiles are dropped.
 - `TileSampling.py` — `WSITileSampler`, the orchestration class: loads each slide,
   runs masking + tiling, and writes `<slide_id>.h5`.
 - `tile_processing.py` — command-line entry point.
 
-## Parameters actually used for BRCA / KIRC / LUAD
+## Differences from the upstream tool
 
-```
-tile_size   = 256
-overlap     = 0
-min_tiles   = 5      # minimum tiles per boundary region, post-filtering
-is_normalized = True  # applies the TCGA-BRCA stain-normalization template below
-                       # to every cohort (no organ-specific template was fit)
-thumb_level = -1
-```
+The copy here is the one that produced the coordinates behind the reported results.
+It differs from the upstream defaults in three places:
 
-These match `settings.txt` in the upstream tool at the commit vendored here, and are
-the values wired into `code/features/extract_features.sh`.
+- the thumbnail and the coordinate scaler are read from the same pyramid level;
+- the tile foreground threshold is 50% of the mask footprint (upstream 70%);
+- red pen-mark removal uses a YUV V &ge; 225 threshold with a 3&times;3 cleanup kernel
+  (upstream V &ge; 140 with a 7&times;7 kernel and dilation).
+
+## Parameters used for BRCA / KIRC / LUAD
+
+| Parameter | Value |
+|---|---|
+| `tile_size` | 256 (level 0) |
+| `overlap` | 0 |
+| `min_tiles` | 5 |
+| `is_normalized` | False |
+
+These are the values in the `settings.txt` written next to the original coordinate
+files of all three cohorts, and the defaults in `code/features/extract_features.sh`.
+Run with them, the tool reproduces the coordinates used for the results exactly
+(checked on 20 randomly drawn BRCA slides). With `--is_normalized True`, every slide
+gains about 0.5% extra tiles on the tissue border.
 
 ## Usage
 
@@ -58,8 +72,8 @@ Called from `extract_features.sh`; not normally run by hand. Direct invocation:
 ```bash
 python code/features/tile_extraction/tile_processing.py \
     --root /path/to/svs --output_dir data/BRCA/patches \
-    --tile_size 256 --min_tiles 5 --is_normalized True --save_thumb True
+    --tile_size 256 --min_tiles 5 --is_normalized False --save_thumb True
 ```
 
-Writes `<output_dir>/<slide_id>.h5` (plus `<output_dir>/Thumbnail/` when
+Writes `<output_dir>/<slide_id>.h5` (plus `<output_dir>/Thumbnails/` when
 `--save_thumb True`).
