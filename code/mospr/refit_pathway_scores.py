@@ -24,8 +24,8 @@ COLLECTIONS = {"hallmark": "h.all.v2025.1.Hs.symbols.gmt",
                "kegg": "c2.cp.kegg_legacy.v2025.1.Hs.symbols.gmt"}
 
 
-MODELS = [("Max", "AbMIL_max%ts", False),
-          ("Mean", "AbMIL_mean%ts", False),
+MODELS = [("Max", "AbMIL_ilse_max%ts", False),
+          ("Mean", "AbMIL_ilse_mean%ts", False),
           ("AbMIL", "AbMIL%ts", False),
           ("HE2RNA", "HE2RNA%ComparisonTrainerts", False),
           ("AbReg", "AbRegMIL%ts", False),
@@ -39,10 +39,6 @@ MODELS = [("Max", "AbMIL_max%ts", False),
           ("2DMamba", "MambaMIL_2D_stop_sampling%Mamba2DTrainerts", False),
           ("CPNN", "ProtoSum_1reg_mse_reg_1e3%DeconvExptsfine", True)]
 
-import os as _os_il
-if _os_il.environ.get("MOSPR_ILSE") == "1":
-    MODELS = [(n, t.replace("AbMIL_max", "AbMIL_ilse_max").replace("AbMIL_mean", "AbMIL_ilse_mean"), *r)
-             for n, t, *r in MODELS]
 STAGES = {"stage1_trainval_holdout": ("_psf", "fpsplit"),
           "stage2_refit_trainval": ("_pstvf", "fpsplit_tv")}
 
@@ -130,7 +126,7 @@ def main(a):
         print(f"[{a.cohort}] {stage} done ({len(rows)} rows so far)", flush=True)
 
     df = pd.DataFrame(rows)
-    out = pathlib.Path(_os_il.environ.get("MOSPR_WORK_OUT", _p.TABLES)) / f"tables/refit/refit_pathway_{a.cohort}.csv"
+    out = _p.TABLES / f"tables/refit/refit_pathway_{a.cohort}.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out, index=False)
     print(f"\nwritten: {out} ({len(df)} rows, models {df.model.nunique()})")

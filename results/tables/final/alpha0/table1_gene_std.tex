@@ -1,8 +1,8 @@
-% 표 1 — 평균 (fold 간 표준편차)
-% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% Table 1 - mean (fold SD)
+% Setting: filtered patches, patient-level split, train+val fine-tuning, seed 2021
 % K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
-% 괄호 안은 4-fold 표준편차(ddof=1)다. 신뢰구간이 아니라 산포 자체다.
-% fold 가 4 개뿐이라 표준편차 추정 자체가 불안정하다는 점을 감안해 읽어야 한다.
+% Parentheses hold the 4-fold standard deviation (ddof=1), i.e. spread, not an interval.
+% With only four folds the standard deviation itself is an unstable estimate.
 \begin{tabular}{lcccccc}
 \toprule
 & \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\

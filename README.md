@@ -26,6 +26,7 @@ macrostates, and per-macrostate mean features feed a closed-form low-rank ridge 
 │   │   ├── refit_gene_scores.py      stage 1 vs stage 2, gene axis
 │   │   ├── refit_pathway_scores.py   stage 1 vs stage 2, pathway axis
 │   │   ├── scorer_robustness.py      rescoring with ssGSEA and GSVA
+│   │   ├── global_factor.py          transcriptome-wide slide factor in mean-z set scores
 │   │   ├── data_efficiency_mospr.py, data_efficiency_score_baselines.py
 │   │   ├── cell2location_deconv.py   cell-type deconvolution (CPNN baseline only)
 │   │   ├── prototype_hybrid.py       shared fitting and metric helpers
@@ -46,22 +47,26 @@ macrostates, and per-macrostate mean features feed a closed-form low-rank ridge 
 │   │   └── check_split.py            compares a split against a reference
 │   ├── tests/test_pipeline.py    runs the pipeline and compares with the released numbers
 │   ├── config/                   configs used for the reported runs
-│   ├── notebooks/                every table and figure in the paper
-│   │   ├── tables_1_2_3.ipynb
-│   │   ├── tables_statistics.ipynb
-│   │   ├── tables_refit_and_robustness.ipynb
-│   │   ├── figure2_macrostate_hallmark.ipynb
-│   │   └── figure3_data_efficiency.ipynb
+│   ├── tables/                   the tables in the paper, from the per-fold results
+│   │   ├── make_tables.py            Tables 1-3
+│   │   ├── table1_variants.py        Table 1 with 95% CI, fold SD and paired p against MoSPR
+│   │   ├── stats_tables.py           appendix: fold mean / 95% CI / SD per method
+│   │   ├── refit_tables.py           appendix: stage 1 vs stage 2, gene axis
+│   │   ├── refit_pathway_tables.py   appendix: stage 1 vs stage 2, pathway axis
+│   │   └── robustness_tables.py      appendix: mean-z vs ssGSEA vs GSVA, global slide factor
+│   ├── figures/
+│   │   ├── figure2.py                Figure 2
+│   │   └── data_efficiency.py        data-efficiency curves
 │   ├── reproduce_results.py      rebuilds the reported numbers from the per-fold CSVs
 │   └── fetch_checkpoints.py      downloads the weights once released
 ├── results/
 │   ├── tables/
-│   │   ├── final/alpha0/         Tables 1-3 (.tex) and their source CSVs
+│   │   ├── final/alpha0/         Tables 1-3 and the Table 1 variants (.tex), source CSVs
 │   │   ├── statistics/           fold mean / 95% CI / SD, fold-wise raw, appendix tables
-│   │   ├── refit/                stage 1 vs stage 2, per fold and summary
+│   │   ├── refit/                stage 1 vs stage 2: per fold, summary, appendix tables
+│   │   ├── robustness/           scorer agreement and global slide factor, appendix tables
 │   │   ├── data_efficiency/      per fold x fraction, MoSPR and baselines
-│   │   ├── macrostate/           per-fold Hallmark / GO-BP / KEGG enrichment
-│   │   └── reproduced_summary.csv
+│   │   └── macrostate/           per-fold macrostate x Hallmark enrichment
 │   └── per_cohort/{BRCA,KIRC,LUAD}/
 │       ├── results/              per-fold and summary scores
 │       └── split/                split_patient_4fold.csv, fold counts, provenance
@@ -181,7 +186,20 @@ standardisation (`xmu`/`xsd`), the target standardisation (`ymu`/`ysd`) and `gen
    FILTERED=1 CONDITION=psplit    bash code/baselines/scripts/axis_baselines.sh
    FILTERED=1 CONDITION=psplit_tv bash code/baselines/scripts/axis_baselines.sh
    ```
-5. Tables and figures: run the notebooks in `code/notebooks/`.
+5. Tables and figures, from the per-fold results in `results/`:
+   ```bash
+   export MOSPR_RESULTS_ROOT=results/tables/final/alpha0/source
+   python code/tables/make_tables.py
+   python code/tables/table1_variants.py
+   python code/tables/stats_tables.py
+   python code/tables/refit_tables.py && python code/tables/refit_pathway_tables.py
+   python code/tables/robustness_tables.py --collection hallmark
+   python code/tables/robustness_tables.py --collection kegg
+   MOSPR_RESULTS_ROOT=results/tables/data_efficiency python code/figures/data_efficiency.py --cohort BRCA
+   ```
+   Every table script regenerates the shipped `.tex` file line for line. Figure 2 needs the
+   microstate cache and the slide images (`MOSPR_WSI_DIR`):
+   `python code/figures/figure2.py --cohort BRCA --fold 0`.
 
 ## Machine and runtimes
 

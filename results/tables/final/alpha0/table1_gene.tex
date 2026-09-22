@@ -1,13 +1,21 @@
-% 조건: 필터링 패치(BRCA 15,483) · 환자 단위 split · train+val 미세조정.
-% K=8 · d=512 · tau=0 · seed 2021 · ALPHA_SMOOTH=0
+% Setting: filtered patches (BRCA 15,483), patient-level split, train+val fine-tuning.
+% K=8, d=512, tau=0, seed 2021, ALPHA_SMOOTH=0
 %
-% alpha 는 인접행렬 평활 상수다. 모든 칸에 mean(C)*alpha 를 더해 spectral
-% embedding 을 만든다 — MoSPR 의 매크로상태 구성이 여기서 결정된다.
-% 비교 모델은 이 값을 쓰지 않으므로 alpha 판이 달라도 동일하다.
-% alpha=1 이면 인접행렬 edge 질량의 절반이 인공 균일 상수가 되고, 예측 성능은
-% 평평하지만(상류 sweep: 0~10 구간 폭 0.004) 매크로상태 안정성이 나빠진다.
+% alpha smooths the adjacency matrix: mean(C)*alpha is added to every cell before the
+% spectral embedding, which is what fixes the MoSPR macrostates.
+% Baselines do not use it, so their numbers are identical across alpha variants.
+% At alpha=1 half of the edge mass becomes an artificial uniform constant; accuracy is
+% flat (sweep over 0-10 spans 0.004) but macrostate stability degrades.
 %
-% 굵게=열 최고, 밑줄=차순위.
+% Bold = best in column, underline = runner-up.
+%
+%    (10x Visium) co-training could not be applied as no public spot data exists, and the
+%    released checkpoints were trained on TCGA and overlap our test folds.
+%
+%    Sentence for the caption:
+%    the authors' spot-level (10x Visium) co-training could not be applied as no
+%    public spot data accompanies these cohorts, and the released checkpoints were
+%    trained on TCGA and therefore overlap our test folds. These numbers do not
 \begin{tabular}{lcccccc}
 \toprule
 & \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\

@@ -28,4 +28,4 @@ pred = (Xz @ w["W_q"].T) @ w["U"] * w["ysd"] + w["ymu"]
 All weights come from the final axis: filtered patches, patient-level split, train+val
 fine-tuning, seed 2021, and for MoSPR K=8, d=512, tau=0, ALPHA_SMOOTH=0. Stage-1 checkpoints are
 not shared. With the optional `predictions/` archive the tables can be rebuilt without the
-checkpoints (`code/reproduce_results.py`, `code/notebooks/`).
+checkpoints (`code/reproduce_results.py`, `code/tables/`).

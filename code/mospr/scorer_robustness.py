@@ -25,8 +25,8 @@ COLLECTIONS = {"hallmark": "h.all.v2025.1.Hs.symbols.gmt",
 import os as _o
 OUT = pathlib.Path(_o.environ.get("MOSPR_WORK_OUT", _p.TABLES)) / "tables/robustness"
 
-MODELS = [("Max", "AbMIL_max%ts", False),
-          ("Mean", "AbMIL_mean%ts", False),
+MODELS = [("Max", "AbMIL_ilse_max%ts", False),
+          ("Mean", "AbMIL_ilse_mean%ts", False),
           ("AbMIL", "AbMIL%ts", False),
           ("HE2RNA", "HE2RNA%ComparisonTrainerts", False),
           ("AbReg", "AbRegMIL%ts", False),
@@ -40,10 +40,6 @@ MODELS = [("Max", "AbMIL_max%ts", False),
           ("2DMamba", "MambaMIL_2D_stop_sampling%Mamba2DTrainerts", False),
           ("CPNN", "ProtoSum_1reg_mse_reg_1e3%DeconvExptsfine", True)]
 
-import os as _os_il
-if _os_il.environ.get("MOSPR_ILSE") == "1":
-    MODELS = [(n, t.replace("AbMIL_max", "AbMIL_ilse_max").replace("AbMIL_mean", "AbMIL_ilse_mean"), *r)
-             for n, t, *r in MODELS]
 SFX = "_pstvf"
 
 

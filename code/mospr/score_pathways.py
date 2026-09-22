@@ -32,8 +32,8 @@ COLLECTIONS = {
 
 
 METHODS = [
-    ("Max", r"AbMIL_max(\d)ts$"),
-    ("Mean", r"AbMIL_mean(\d)ts$"),
+    ("Max", r"AbMIL_ilse_max(\d)ts$"),
+    ("Mean", r"AbMIL_ilse_mean(\d)ts$"),
     ("AbMIL", r"AbMIL(\d)ts$"),
     ("ILRA", r"ILRA(\d)ts$"),
     ("S4MIL", r"S4Model_stop_sampling(\d)ts$"),

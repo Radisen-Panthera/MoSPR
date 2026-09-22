@@ -1,0 +1,25 @@
+% Share of the mean-z set score explained by a transcriptome-wide slide factor, and
+% that factor's own accuracy. A larger share makes scorers disagree more.
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Method & share & $\rho$ & share & $\rho$ & share & $\rho$\\
+\midrule
+Max & 0.43 & 0.351 & 0.59 & 0.260 & 0.63 & 0.403\\
+Mean & 0.33 & 0.467 & 0.47 & 0.367 & 0.55 & 0.465\\
+AbMIL & 0.42 & 0.502 & 0.55 & 0.396 & 0.60 & 0.477\\
+HE2RNA & 0.55 & 0.328 & 0.71 & 0.298 & 0.61 & 0.348\\
+AbReg & 0.41 & 0.459 & 0.50 & 0.355 & 0.63 & 0.469\\
+tRNAformer & 0.44 & 0.350 & 0.53 & 0.331 & 0.58 & 0.418\\
+ILRA & 0.50 & 0.379 & 0.66 & 0.335 & 0.61 & 0.461\\
+S4MIL & 0.44 & 0.419 & 0.54 & 0.336 & 0.59 & 0.459\\
+MambaMIL & 0.41 & 0.470 & 0.57 & 0.289 & 0.62 & 0.524\\
+SRMambaMIL & 0.42 & 0.450 & 0.57 & 0.259 & 0.62 & 0.489\\
+MOSBY & 0.65 & 0.350 & 0.79 & 0.235 & 0.82 & 0.304\\
+SEQUOIA VIS & 0.35 & 0.411 & 0.46 & 0.360 & 0.58 & 0.470\\
+2DMamba & 0.40 & 0.453 & 0.47 & 0.362 & 0.65 & 0.477\\
+CPNN & 0.11 & 0.345 & 0.07 & 0.204 & 0.16 & 0.384\\
+\textbf{MoSPR (ours)} & 0.36 & 0.552 & 0.47 & 0.409 & 0.52 & 0.515\\
+\bottomrule
+\end{tabular}

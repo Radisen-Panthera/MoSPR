@@ -131,3 +131,9 @@ CLAUDE.md
 .continue/
 .codeium/
 .github-copilot/
+
+# ---- run outputs written inside the checkout ----------------------------------------
+results/run/
+results/figures/
+results/tables/reproduced_summary.csv
+problem_docs/

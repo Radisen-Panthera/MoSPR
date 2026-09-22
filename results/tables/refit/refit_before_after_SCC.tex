@@ -1,0 +1,27 @@
+% TV refitting before/after - SCC. stage 1 (fit on train, early stop on val) vs
+% stage 2 (refit on train+val, lr 1e-4 for 8 epochs). The test set is the same in both.
+% Value = 4-fold mean {\tiny$\pm$95\% CI}. Delta is the fold-paired difference and
+% the parentheses give how many of the four folds improved.
+\begin{tabular}{lccccccccc}
+\toprule
+& \multicolumn{3}{c}{BRCA} & \multicolumn{3}{c}{KIRC} & \multicolumn{3}{c}{LUAD}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Method & Before & After & $\Delta$ & Before & After & $\Delta$ & Before & After & $\Delta$\\
+\midrule
+Max & 0.229\,{\tiny$\pm$0.020} & 0.283\,{\tiny$\pm$0.014} & \textbf{+0.054}\,{\tiny(4/4)} & 0.191\,{\tiny$\pm$0.020} & 0.244\,{\tiny$\pm$0.021} & \textbf{+0.054}\,{\tiny(4/4)} & 0.215\,{\tiny$\pm$0.023} & 0.278\,{\tiny$\pm$0.024} & \textbf{+0.063}\,{\tiny(4/4)}\\
+Mean & 0.282\,{\tiny$\pm$0.021} & 0.338\,{\tiny$\pm$0.015} & \textbf{+0.056}\,{\tiny(4/4)} & 0.248\,{\tiny$\pm$0.026} & 0.293\,{\tiny$\pm$0.022} & \textbf{+0.045}\,{\tiny(4/4)} & 0.266\,{\tiny$\pm$0.020} & 0.315\,{\tiny$\pm$0.019} & \textbf{+0.048}\,{\tiny(4/4)}\\
+AbMIL & 0.308\,{\tiny$\pm$0.038} & 0.363\,{\tiny$\pm$0.021} & \textbf{+0.055}\,{\tiny(4/4)} & 0.237\,{\tiny$\pm$0.039} & 0.299\,{\tiny$\pm$0.023} & \textbf{+0.062}\,{\tiny(4/4)} & 0.257\,{\tiny$\pm$0.022} & 0.324\,{\tiny$\pm$0.028} & \textbf{+0.067}\,{\tiny(4/4)}\\
+HE2RNA & 0.221\,{\tiny$\pm$0.037} & 0.293\,{\tiny$\pm$0.027} & \textbf{+0.072}\,{\tiny(4/4)} & 0.227\,{\tiny$\pm$0.039} & 0.273\,{\tiny$\pm$0.049} & \textbf{+0.045}\,{\tiny(4/4)} & 0.243\,{\tiny$\pm$0.029} & 0.297\,{\tiny$\pm$0.019} & \textbf{+0.054}\,{\tiny(4/4)}\\
+AbReg & 0.244\,{\tiny$\pm$0.030} & 0.349\,{\tiny$\pm$0.024} & \textbf{+0.105}\,{\tiny(4/4)} & 0.182\,{\tiny$\pm$0.076} & 0.293\,{\tiny$\pm$0.047} & \textbf{+0.111}\,{\tiny(4/4)} & 0.210\,{\tiny$\pm$0.027} & 0.311\,{\tiny$\pm$0.016} & \textbf{+0.101}\,{\tiny(4/4)}\\
+tRNAformer & 0.307\,{\tiny$\pm$0.037} & 0.332\,{\tiny$\pm$0.012} & \textbf{+0.025}\,{\tiny(4/4)} & 0.281\,{\tiny$\pm$0.040} & 0.319\,{\tiny$\pm$0.035} & \textbf{+0.038}\,{\tiny(4/4)} & 0.287\,{\tiny$\pm$0.013} & 0.336\,{\tiny$\pm$0.010} & \textbf{+0.049}\,{\tiny(4/4)}\\
+ILRA & 0.105\,{\tiny$\pm$0.110} & 0.271\,{\tiny$\pm$0.050} & \textbf{+0.166}\,{\tiny(4/4)} & 0.182\,{\tiny$\pm$0.038} & 0.248\,{\tiny$\pm$0.027} & \textbf{+0.066}\,{\tiny(4/4)} & 0.220\,{\tiny$\pm$0.070} & 0.304\,{\tiny$\pm$0.013} & \textbf{+0.084}\,{\tiny(4/4)}\\
+S4MIL & 0.295\,{\tiny$\pm$0.012} & 0.330\,{\tiny$\pm$0.014} & \textbf{+0.035}\,{\tiny(4/4)} & 0.254\,{\tiny$\pm$0.054} & 0.274\,{\tiny$\pm$0.054} & \textbf{+0.021}\,{\tiny(4/4)} & 0.281\,{\tiny$\pm$0.014} & 0.315\,{\tiny$\pm$0.015} & \textbf{+0.034}\,{\tiny(4/4)}\\
+MambaMIL & 0.311\,{\tiny$\pm$0.025} & 0.356\,{\tiny$\pm$0.026} & \textbf{+0.045}\,{\tiny(4/4)} & 0.271\,{\tiny$\pm$0.040} & 0.290\,{\tiny$\pm$0.034} & \textbf{+0.019}\,{\tiny(4/4)} & 0.281\,{\tiny$\pm$0.027} & 0.335\,{\tiny$\pm$0.028} & \textbf{+0.054}\,{\tiny(4/4)}\\
+SRMambaMIL & 0.317\,{\tiny$\pm$0.025} & 0.352\,{\tiny$\pm$0.015} & \textbf{+0.035}\,{\tiny(4/4)} & 0.264\,{\tiny$\pm$0.022} & 0.294\,{\tiny$\pm$0.015} & \textbf{+0.030}\,{\tiny(4/4)} & 0.283\,{\tiny$\pm$0.022} & 0.326\,{\tiny$\pm$0.038} & \textbf{+0.043}\,{\tiny(4/4)}\\
+MOSBY & 0.322\,{\tiny$\pm$0.010} & 0.349\,{\tiny$\pm$0.013} & \textbf{+0.027}\,{\tiny(4/4)} & 0.243\,{\tiny$\pm$0.049} & 0.289\,{\tiny$\pm$0.049} & \textbf{+0.046}\,{\tiny(4/4)} & 0.285\,{\tiny$\pm$0.052} & 0.308\,{\tiny$\pm$0.031} & \textbf{+0.023}\,{\tiny(4/4)}\\
+SEQUOIA VIS & 0.313\,{\tiny$\pm$0.022} & 0.337\,{\tiny$\pm$0.011} & \textbf{+0.025}\,{\tiny(4/4)} & 0.263\,{\tiny$\pm$0.052} & 0.314\,{\tiny$\pm$0.040} & \textbf{+0.052}\,{\tiny(4/4)} & 0.272\,{\tiny$\pm$0.015} & 0.331\,{\tiny$\pm$0.025} & \textbf{+0.059}\,{\tiny(4/4)}\\
+2DMamba & 0.314\,{\tiny$\pm$0.015} & 0.348\,{\tiny$\pm$0.014} & \textbf{+0.034}\,{\tiny(4/4)} & 0.241\,{\tiny$\pm$0.055} & 0.292\,{\tiny$\pm$0.026} & \textbf{+0.051}\,{\tiny(4/4)} & 0.272\,{\tiny$\pm$0.017} & 0.313\,{\tiny$\pm$0.022} & \textbf{+0.041}\,{\tiny(4/4)}\\
+CPNN & 0.348\,{\tiny$\pm$0.017} & 0.356\,{\tiny$\pm$0.018} & \textbf{+0.008}\,{\tiny(4/4)} & 0.301\,{\tiny$\pm$0.013} & 0.310\,{\tiny$\pm$0.015} & \textbf{+0.008}\,{\tiny(4/4)} & 0.316\,{\tiny$\pm$0.017} & 0.325\,{\tiny$\pm$0.014} & \textbf{+0.010}\,{\tiny(4/4)}\\
+\textbf{MoSPR (ours)} & 0.390\,{\tiny$\pm$0.009} & 0.411\,{\tiny$\pm$0.014} & \textbf{+0.021}\,{\tiny(4/4)} & 0.333\,{\tiny$\pm$0.045} & 0.348\,{\tiny$\pm$0.036} & \textbf{+0.015}\,{\tiny(4/4)} & 0.347\,{\tiny$\pm$0.017} & 0.376\,{\tiny$\pm$0.019} & \textbf{+0.028}\,{\tiny(4/4)}\\
+\bottomrule
+\end{tabular}

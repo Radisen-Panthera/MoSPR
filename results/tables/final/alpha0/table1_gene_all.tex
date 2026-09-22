@@ -1,9 +1,9 @@
-% 표 1 — 평균 ± 95% CI (표준편차), MoSPR 대비 p 값
-% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% Table 1 - mean +- 95% CI (SD), p against MoSPR
+% Setting: filtered patches, patient-level split, train+val fine-tuning, seed 2021
 % K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
-% 각 칸은 평균 ± 95% 신뢰구간 (fold 간 t, df=3), 괄호 안은 표준편차다.
-% p 는 MoSPR 과 해당 모델의 fold 짝지은 유전자 SCC 차이에 대한 양측
-% 대응 t-검정이다 (n=4, df=3). 다중비교 보정 없음.
+% Each cell is mean +- 95% CI (t across folds, df=3), with the standard deviation in parentheses.
+% p is the two-sided paired t-test on the fold-wise gene SCC difference against MoSPR
+% (n=4, df=3). No multiple-comparison correction.
 \begin{tabular}{lccccccccc}
 \toprule
 & \multicolumn{3}{c}{BRCA} & \multicolumn{3}{c}{KIRC} & \multicolumn{3}{c}{LUAD}\\

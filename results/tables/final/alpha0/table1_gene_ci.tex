@@ -1,12 +1,12 @@
-% 표 1 — 평균 ± 95% 신뢰구간
-% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% Table 1 - mean +- 95% CI
+% Setting: filtered patches, patient-level split, train+val fine-tuning, seed 2021
 % K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
-% 값은 4-fold 평균 ± 95% 신뢰구간이다. 구간은 fold 간 t 분포로 잡았다
-% (df=3, t=3.182). 반복 단위는 fold 이지 유전자가 아니다 — 유전자끼리
-% 강하게 상관돼 있어 유전자 축으로 잡으면 폭이 비현실적으로 좁아진다.
-% 주의: 구간은 모델마다 독립으로 계산했다. 두 모델의 구간이 겹쳐도
-% 차이가 없다는 뜻이 아니다 — 모든 모델이 같은 fold(같은 test 슬라이드)를
-% 보므로 모델 간 비교는 짝지은 검정이어야 한다 (p 값 판 참조).
+% Values are the 4-fold mean +- 95% CI, taken from the t distribution across folds
+% (df=3, t=3.182). The repeated unit is the fold, not the gene: genes are
+% strongly correlated, so intervals over genes come out unrealistically narrow.
+% Note: intervals are computed per model. Overlapping intervals of two models do
+% not mean there is no difference: every model sees the same folds (same test slides),
+% so comparisons between models must be paired (see the p-value variant).
 \begin{tabular}{lcccccc}
 \toprule
 & \multicolumn{2}{c}{BRCA} & \multicolumn{2}{c}{KIRC} & \multicolumn{2}{c}{LUAD}\\

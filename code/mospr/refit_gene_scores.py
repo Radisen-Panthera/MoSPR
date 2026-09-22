@@ -21,8 +21,8 @@ OUT = Path(_o.environ["MOSPR_WORK_OUT"]) / "tables" if _o.environ.get("MOSPR_WOR
 
 METHODS = [("CPNN", r"ProtoSum_1reg_mse_reg_1e3(\d)DeconvExptsfine"),
            ("AbMIL", r"AbMIL(\d)ts"),
-           ("AbMIL mean-pool", r"AbMIL_mean(\d)ts"),
-           ("AbMIL max-pool", r"AbMIL_max(\d)ts"),
+           ("AbMIL mean-pool", r"AbMIL_ilse_mean(\d)ts"),
+           ("AbMIL max-pool", r"AbMIL_ilse_max(\d)ts"),
            ("ILRA", r"ILRA(\d)ts"),
            ("S4Model", r"S4Model_stop_sampling(\d)ts"),
            ("MambaMIL", r"MambaMILvanira_stop_sampling(\d)ts"),
@@ -35,10 +35,6 @@ METHODS = [("CPNN", r"ProtoSum_1reg_mse_reg_1e3(\d)DeconvExptsfine"),
            ("tRNAformer", r"tRNAsformer(\d)ComparisonTrainerts")]
 
 
-import os as _os_il
-if _os_il.environ.get("MOSPR_ILSE") == "1":
-    METHODS = [(n, t.replace("AbMIL_max", "AbMIL_ilse_max").replace("AbMIL_mean", "AbMIL_ilse_mean"), *r)
-             for n, t, *r in METHODS]
 STAGES = {"stage1_trainval_holdout": "_psf", "stage2_refit_trainval": "_pstvf"}
 
 

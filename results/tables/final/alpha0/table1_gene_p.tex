@@ -1,12 +1,12 @@
-% 표 1 — 평균과 MoSPR 대비 p 값
-% 조건: 필터링 패치 · 환자 단위 split · train+val 미세조정 · seed 2021
+% Table 1 - mean and p against MoSPR
+% Setting: filtered patches, patient-level split, train+val fine-tuning, seed 2021
 % K=8 · d=512 · tau=0 · ALPHA_SMOOTH=0
-% p 는 **MoSPR 과 해당 모델의 fold 짝지은 유전자 SCC 차이**에 대한
-% 양측 대응 t-검정 결과다 (n=4 fold, df=3). 귀무가설은 '두 모델의
-% fold 별 SCC 차이의 평균이 0' 이다. 모든 모델이 같은 4-fold 를 보므로
-% 짝지어 검정한다 — 독립 표본으로 다루면 fold 난이도라는 공통 성분이
-% 잡음으로 세어져 검정력이 떨어진다.
-% 다중비교 보정은 하지 않았다 (코호트당 14 개 비교).
+% p is for the fold-paired difference in gene SCC between MoSPR and that model,
+% (n=4 folds, df=3). The null hypothesis is that the mean fold-wise SCC difference
+% between the two models is zero. All models see the same four folds, so the runs are
+% paired: treating them as independent samples would count fold difficulty as
+% noise and lose power.
+% No multiple-comparison correction (14 comparisons per cohort).
 \begin{tabular}{lccccccccc}
 \toprule
 & \multicolumn{3}{c}{BRCA} & \multicolumn{3}{c}{KIRC} & \multicolumn{3}{c}{LUAD}\\
